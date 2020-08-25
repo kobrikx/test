@@ -40,20 +40,10 @@ jobs:
       TAG: "${GITHUB_SHA::10}"
 
     steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
-
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
           submodules: true
-
-      - name: Create AWS Profile
-        run: make aws.profile
 
   squibby:
     name: squibby
