@@ -30,7 +30,7 @@ jobs:
       id: filter
       with:
         # Filters stored in own yaml file
-        filters: '.github/workflows/filters.yml'
+        filters: '.github/filters.yml'
   infra:
     name: infra
     runs-on: ubuntu-latest
