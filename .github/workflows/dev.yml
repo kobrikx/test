@@ -21,8 +21,6 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
-    inputs:
-      base: 'develop'
     outputs:
       squibby: ${{ steps.filter.outputs.squibby }}
     steps:
