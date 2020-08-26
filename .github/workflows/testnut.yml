@@ -46,9 +46,9 @@ jobs:
         run: make terraform.plan  > output/results.txt
         shell: bash
       - uses: actions/upload-artifact@v1
-      with:
-        name: results
-        path: output
+        with:
+         name: results
+         path: output
       - uses: actions/download-artifact@v1
         with:
           name: results
