@@ -1,4 +1,4 @@
-name: "[testnut] Infra & Apps Deploy"
+name: "[testnut] Manual Infra & Apps Deploy"
 defaults:
   run:
     shell: bash
