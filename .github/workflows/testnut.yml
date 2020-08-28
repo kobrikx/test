@@ -7,7 +7,7 @@ env:
   AWS_REGION: us-east-1
   ENV: testnut
 on:
-  pull_request:
+  push:
     branches:
       - develop
 
@@ -39,22 +39,56 @@ jobs:
       - name: Create AWS Profile
         run: make aws.profile
 
-      - name: make folder
-        run: mkdir -p output/
-
-      - name: Terraform plan
-        run: make terraform.plan  > output/results.txt
+      - name: Deploy Infra
+        run: make infra
         shell: bash
-      - uses: actions/upload-artifact@v1
+
+      - name: Save TF Output
+        uses: actions/upload-artifact@v1
         with:
-         name: results
-         path: output
-      - uses: actions/download-artifact@v1
+          name: output
+          path: .infra/env/${{ env.ENV }}/output.json
+  squibby:
+    name: squibby
+    runs-on: ubuntu-latest
+    needs:
+      - infra
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          name: results
-      - name: comment PR
-        uses: machine-learning-apps/pr-comment@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
         with:
-          path: results/results.txt
+          submodules: true
+
+      - name: Create AWS Profile
+        run: make aws.profile
+
+      - name: Load TF Output
+        uses: actions/download-artifact@v1
+        with:
+          name: output
+
+      - name: Extract TF Output
+        run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+
+      - name: Login to ECR
+        run: make ecr.login
+
+      - name: Build Container
+        run: make ${{ github.job }}.image
+
+      - name: Push Image
+        run: make ${{ github.job }}.push
+
+      - name: Deploy Container
+        run: make ${{ github.job }}.deploy
+
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
