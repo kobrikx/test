@@ -1,0 +1,48 @@
+name: "[testnut] Terraform plan"
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_REGION: us-east-1
+  ENV: testnut
+on:
+  pull_request:
+jobs:
+  example:
+    name: Terraform plan
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+          submodules: true
+          
+    - name: Create AWS Profile
+      run: make aws.profile
+      
+    - name: Terraform plan
+      run: make terraform.plan-output
+      shell: bash
+
+    - uses: actions/upload-artifact@v1
+      with:
+          name: results
+          path: .infra/env/${{ env.ENV }}/tfplan.md
+
+    - uses: actions/download-artifact@v1
+      with:
+          name: results
+    - name: comment PR
+      uses: machine-learning-apps/pr-comment@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          path: results/tfplan.md
