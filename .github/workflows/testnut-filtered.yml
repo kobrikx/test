@@ -1,0 +1,112 @@
+name: "[filtered][testnut] Infra & Apps Deploy"
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_REGION: us-east-1
+  ENV: testnut
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+      # Devops Test Pushes
+      - '*/devops-*'
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      squibby: ${{ steps.filter.outputs.squibby }}
+    steps:
+      - uses: actions/checkout@v2
+      # For pull requests it's not necessary to checkout the code
+      - uses: dorny/paths-filter@v2.2.1
+        id: filter
+        with:
+          # Filters stored in own yaml file
+          filters: '.github/filters.yml'
+  infra:
+    name: infra
+    runs-on: ubuntu-latest
+    env:
+      # TODO: This needs to be changed for an actual dev key
+      SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCg52RzG0CvE++pPiyrrW34vS+33sQAl8UNQ815u+huMTnBhiialQrG8zpjcb7GP4zHKasxY1dcP4CPyOAb/L+cytocdEogzaZxUvDzawYdJ2H+X4lRMv8uSqz4MmiPQorZy1fXOyqiesmdOvvaFvHtn1NiQrnwnNPTjE879BT2UxG2HiAiJVxSjPKFa/URN7vgyXm22ZYoJmIXTW2KR+bTlDixe29BDd3vG/jKMvjM8EGTxMws8A1xac7xSxCufEmFRV3k8UsNylsjhzTu0sLr5qIKhbFeMMqy26lJerxY3Q95FhtG9ynsxTLJNr3cDCbwqXn96RXPaWvsHwuAjy2d nya@nyau"
+      TAG: "${GITHUB_SHA::10}"
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Create AWS Profile
+        run: make aws.profile
+
+      - name: Deploy Infra
+        run: make infra
+        shell: bash
+
+      - name: Save TF Output
+        uses: actions/upload-artifact@v1
+        with:
+          name: output
+          path: .infra/env/${{ env.ENV }}/output.json
+  squibby:
+    name: squibby
+    runs-on: ubuntu-latest
+    needs:
+      - infra
+      - changes
+    if: ${{ needs.changes.outputs.${{ github.job }} == 'true' }}
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Create AWS Profile
+        run: make aws.profile
+
+      - name: Load TF Output
+        uses: actions/download-artifact@v1
+        with:
+          name: output
+
+      - name: Extract TF Output
+        run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+
+      - name: Login to ECR
+        run: make ecr.login
+
+      - name: Build Container
+        run: make ${{ github.job }}.image
+
+      - name: Push Image
+        run: make ${{ github.job }}.push
+
+      - name: Deploy Container
+        run: make ${{ github.job }}.deploy
+
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
