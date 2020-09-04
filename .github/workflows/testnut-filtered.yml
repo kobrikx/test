@@ -69,7 +69,7 @@ jobs:
     needs:
       - infra
       - changes
-    if: ${{ needs.changes.outputs.${{ github.job }} == 'true' }}
+    if: ${{ needs.changes.output.squibby == 'true' }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
