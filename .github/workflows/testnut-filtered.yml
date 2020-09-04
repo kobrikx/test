@@ -63,7 +63,19 @@ jobs:
         with:
           name: output
           path: .infra/env/${{ env.ENV }}/output.json
+      
+      - name: Load TF Output
+        uses: actions/download-artifact@v1
+        with:
+          name: output
 
+      - name: Extract TF Output
+        run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+      
+      - name: SSM output
+        run: make terraform.output-to-ssm
+        shell: bash
+        
   squibby:
     name: squibby
     runs-on: ubuntu-latest
