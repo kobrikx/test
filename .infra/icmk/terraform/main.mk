@@ -46,9 +46,8 @@ terraform.apply: terraform.plan ## Deploy infrastructure
 	@ cd $(ENV_DIR) && \
 	$(TERRAFORM) apply -input=false tfplan && \
 	$(TERRAFORM) output -json > output.json && \
-	$(OUTPUT_JSON_FILE2) && \
-	echo "posle etogo sdihaet" && \
-	$(CMD_SAVE_OUTPUT_TO_SSM)
+	ls -la output.json && \
+	echo "posle etogo sdihaet"
 
 terraform.checkov: ## Test infrastructure with checkov
 	@ echo "Testing with Checkov:"
