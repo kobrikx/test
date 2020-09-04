@@ -16,7 +16,6 @@ on:
 
       # Devops Test Pushes
       - '*/devops-*'
-
 jobs:
   changes:
     runs-on: ubuntu-latest
