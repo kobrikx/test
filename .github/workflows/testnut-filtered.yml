@@ -63,6 +63,7 @@ jobs:
         with:
           name: output
           path: .infra/env/${{ env.ENV }}/output.json
+
   squibby:
     name: squibby
     runs-on: ubuntu-latest
