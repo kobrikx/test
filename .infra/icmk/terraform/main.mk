@@ -15,7 +15,7 @@ TERRAFORM_STATE_BUCKET_NAME ?= $(NAMESPACE)-tf-state
 CHECKOV ?= $(DOCKER) run -v $(ENV_DIR):/tf -i bridgecrew/checkov -d /tf -s
 TFLINT ?= $(DOCKER) run --rm -v $(ENV_DIR):/data -t wata727/tflint
 TERRAFORM ?= $(DOCKER) run --rm -v $(ENV_DIR):/$(ENV_DIR) -v "$(ENV_DIR)/.terraform":/"$(ENV_DIR)/.terraform" -v "$(INFRA_DIR)":"$(INFRA_DIR)" -v ~/.aws/:/root/.aws:ro -w $(ENV_DIR) -e AWS_PROFILE=$(AWS_PROFILE) -e ENV=$(ENV) hashicorp/terraform:$(TERRAFORM_VERSION)
-CMD_SAVE_OUTPUT_TO_SSM = $(AWS) --profile "$(AWS_PROFILE)" ssm put-parameter --name "/$(ENV)/terraform-output" --type "SecureString" --data-type "text" --overwrite --value "$(OUTPUT_JSON_BASE64)"
+CMD_SAVE_OUTPUT_TO_SSM = $(AWS) --profile "$(AWS_PROFILE)" ssm put-parameter --name "/$(ENV)/terraform-output" --type "SecureString" --data-type "text" --overwrite --value "$(OUTPUT_JSON_BASE64)" && echo "\033[32m[OK]\033[0m Terraform output saved to ssm://$(ENV)/terraform-output" || echo "\033[31m[ERROR]\033[0m Terraform output saving failed"
 
 # Tasks
 ########################################################################################################################
@@ -44,8 +44,7 @@ terraform.init: gomplate terraform
 terraform.apply: terraform.plan ## Deploy infrastructure
 	@ cd $(ENV_DIR) && \
 	$(TERRAFORM) apply -input=false tfplan && \
-	$(TERRAFORM) output -json > output.json	&& \
-	$(CMD_SAVE_OUTPUT_TO_SSM)
+	$(TERRAFORM) output -json > output.json
 
 terraform.checkov: ## Test infrastructure with checkov
 	@ echo "Testing with Checkov:"
