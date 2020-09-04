@@ -5,7 +5,8 @@ EC2_KEY_PAIR_NAME ?= $(ENV)-$(NAMESPACE)
 ENV_DIR ?= $(INFRA_DIR)/env/$(ENV)
 OUTPUT_JSON_FILE = $(INFRA_DIR)/env/$(ENV)/output.json
 OUTPUT_JSON_BASE64 = $(shell cat $(OUTPUT_JSON_FILE) | $(BASE64))
-TERRAFORM_VERSION ?= "0.12.29"
+OUTPUT_JSON_FILE2 = $(shell cat $(OUTPUT_JSON_FILE))
+TERRAFORM_VERSION ?= "0.12.29" 
 
 # Terraform Backend Config
 TERRAFORM_STATE_KEY = $(ENV)/terraform.tfstate
@@ -44,7 +45,9 @@ terraform.init: gomplate terraform
 terraform.apply: terraform.plan ## Deploy infrastructure
 	@ cd $(ENV_DIR) && \
 	$(TERRAFORM) apply -input=false tfplan && \
-	$(TERRAFORM) output -json > output.json
+	$(TERRAFORM) output -json > output.json && \
+	@ echo $(OUTPUT_JSON_FILE)
+	$(CMD_SAVE_OUTPUT_TO_SSM)
 
 terraform.checkov: ## Test infrastructure with checkov
 	@ echo "Testing with Checkov:"
