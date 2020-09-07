@@ -29,7 +29,7 @@ jobs:
       run: make aws.profile
       
     - name: Terraform plan
-      run: make terraform.plan-output
+      run: make terraform.plan
       shell: bash
 
     - uses: actions/upload-artifact@v1
