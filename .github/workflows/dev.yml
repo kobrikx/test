@@ -1,10 +1,12 @@
-name: "[filtered][testnut] Infra & Apps Deploy"
+name: "[testnut] Infra & Apps Deploy"
 defaults:
   run:
     shell: bash
+
 env:
   AWS_REGION: us-east-1
   ENV: testnut
+
 on:
   push:
     branches:
@@ -13,27 +15,56 @@ on:
     branches:
       - develop
 jobs:
-  #This job compares folders and create condition to run job:
-  changes:  
+
+# Perform tests on pull request to develop branch
+reviewdog-pr-check:
+    if: github.event_name == 'pull_request'
+    name: ReviewDog on Pull Request
     runs-on: ubuntu-latest
-    #Set job outputs to values from filter step. If you have more than one project, you should add more outputs.
-    outputs:
-      squibby: ${{ steps.filter.outputs.squibby }}
     steps:
-      - uses: actions/checkout@v2
-      # For pull requests it's not necessary to checkout the code
-      - uses: dorny/paths-filter@v2.2.1
-        id: filter
-        with:
-          # Filters stored in own yaml file. We need to use path to filter file.
-          filters: '.github/filters.yml'
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform init
+        run: terraform init
+            
+      - name: Setup ReviewDog
+        run: |
+         mkdir -p $HOME/bin && curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b $HOME/bin
+         echo ::add-path::$HOME/bin
+         
+      - name: Run ReviewDog (github-pr-check)
+        continue-on-error: true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm --name tflint -v $PWD:/data -t wata727/tflint --format=checkstyle | reviewdog -f=checkstyle -reporter=github-pr-check -name=github-pr-check-info
           
-  #Create infrastructure for deploying projects   
-  infra:
+      - name: Run ReviewDog (github-pr-check with fail-on-error)  
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm --name tflint -v $PWD:/data -t wata727/tflint --format=checkstyle | reviewdog -f=checkstyle -name=pr-check-fail-on-error -reporter=github-pr-check -fail-on-error -filter-mode=nofilter 
+  
+  checkov-pr-check:
+    if: github.event_name == 'pull_request'
+    name: Checkov on Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+         
+      - name: Run Checkov CLI test
+        continue-on-error: true
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o cli
+
+  infra:  # Create infrastructure for services on push to Develop branch
+    if: github.event_name == 'push'
     name: infra
     runs-on: ubuntu-latest
     env:
-      SSH_PUBLIC_KEY: "<Your AWS SSH key>"
+      # TODO: This needs to be changed for an actual dev key
+      SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCg52RzG0CvE++pPiyrrW34vS+33sQAl8UNQ815u+huMTnBhiialQrG8zpjcb7GP4zHKasxY1dcP4CPyOAb/L+cytocdEogzaZxUvDzawYdJ2H+X4lRMv8uSqz4MmiPQorZy1fXOyqiesmdOvvaFvHtn1NiQrnwnNPTjE879BT2UxG2HiAiJVxSjPKFa/URN7vgyXm22ZYoJmIXTW2KR+bTlDixe29BDd3vG/jKMvjM8EGTxMws8A1xac7xSxCufEmFRV3k8UsNylsjhzTu0sLr5qIKhbFeMMqy26lJerxY3Q95FhtG9ynsxTLJNr3cDCbwqXn96RXPaWvsHwuAjy2d nya@nyau"
       TAG: "${GITHUB_SHA::10}"
 
     steps:
@@ -52,6 +83,15 @@ jobs:
       - name: Create AWS Profile
         run: make aws.profile
 
+      - name: Terraform plan
+        run: make terraform.plan
+        shell: bash
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: results
+          path: .infra/env/${{ env.ENV }}/tfplan.md
+
       - name: Deploy Infra
         run: make infra
         shell: bash
@@ -61,16 +101,13 @@ jobs:
         with:
           name: output
           path: .infra/env/${{ env.ENV }}/output.json
-          
-#Create Squibby service deploy job
- squibby:
+
+  squibby:
+    if: github.event_name == 'push'
     name: squibby
     runs-on: ubuntu-latest
     needs:
       - infra
-      - changes
-    # Set condition for Squibby job to run.
-    if: ${{ needs.changes.outputs.squibby == 'true' }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -110,4 +147,42 @@ jobs:
       - name: Logout of Amazon ECR
         if: always()
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
-        
+
+  terraform_plan:
+    if: github.event_name == 'pull_request'
+    name: terraform_plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Create AWS Profile
+        run: make aws.profile
+
+      - name: Terraform plan
+        run: make terraform.plan
+        shell: bash
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: results
+          path: .infra/env/${{ env.ENV }}/tfplan.md
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: results
+      - name: comment PR
+        uses: machine-learning-apps/pr-comment@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: results/tfplan.md
