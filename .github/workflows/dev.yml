@@ -1,11 +1,11 @@
-name: "[testnut] Infra & Apps Deploy"
+name: "[dev] Infra & Apps Deploy"
 defaults:
   run:
     shell: bash
 
 env:
   AWS_REGION: us-east-1
-  ENV: testnut
+  ENV: dev
 
 on:
   push:
