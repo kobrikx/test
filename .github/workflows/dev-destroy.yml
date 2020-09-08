@@ -1,10 +1,10 @@
-name: " ⏰⚡💣 [testnut][scheduled] Infra & Apps Destroy 💣⚡⏰ "
+name: " ⏰⚡💣 [dev][scheduled] Infra & Apps Destroy 💣⚡⏰ "
 defaults:
   run:
     shell: bash
 env:
   AWS_REGION: us-east-1
-  ENV: testnut
+  ENV: dev
 on:
   schedule:
     - cron: '0 3 * * *'
