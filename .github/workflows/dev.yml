@@ -15,7 +15,6 @@ on:
     branches:
       - develop
 jobs:
-
 # Perform tests on pull request to develop branch
  reviewdog-pr-check:
     if: github.event_name == 'pull_request'
@@ -102,7 +101,7 @@ jobs:
           name: output
           path: .infra/env/${{ env.ENV }}/output.json
 
-squibby:
+ squibby:
     if: github.event_name == 'push'
     name: squibby
     runs-on: ubuntu-latest
@@ -147,20 +146,20 @@ squibby:
       - name: Logout of Amazon ECR
         if: always()
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
-
-terraform_plan:
-        if: github.event_name == 'pull_request'
-        name: terraform_plan
-        runs-on: ubuntu-latest
-        steps:
-        - name: Configure AWS Credentials
+ 
+ terraform_plan:
+    if: github.event_name == 'pull_request'
+    name: terraform_plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ env.AWS_REGION }}
 
-     - name: Checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v2
         with:
           submodules: true
