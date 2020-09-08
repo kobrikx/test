@@ -1,11 +1,11 @@
-name: "[dev] Infra & Apps Deploy"
+name: "[testnut] Infra & Apps Deploy"
 defaults:
   run:
     shell: bash
 
 env:
   AWS_REGION: us-east-1
-  ENV: dev
+  ENV: testnut
 
 on:
   push:
@@ -15,50 +15,7 @@ on:
     branches:
       - develop
 jobs:
-
-# Perform tests on pull request to develop branch
-reviewdog-pr-check:
-    if: github.event_name == 'pull_request'
-    name: ReviewDog on Pull Request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Terraform init
-        run: terraform init
-            
-      - name: Setup ReviewDog
-        run: |
-         mkdir -p $HOME/bin && curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b $HOME/bin
-         echo ::add-path::$HOME/bin
-         
-      - name: Run ReviewDog (github-pr-check)
-        continue-on-error: true
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker run --rm --name tflint -v $PWD:/data -t wata727/tflint --format=checkstyle | reviewdog -f=checkstyle -reporter=github-pr-check -name=github-pr-check-info
-          
-      - name: Run ReviewDog (github-pr-check with fail-on-error)  
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker run --rm --name tflint -v $PWD:/data -t wata727/tflint --format=checkstyle | reviewdog -f=checkstyle -name=pr-check-fail-on-error -reporter=github-pr-check -fail-on-error -filter-mode=nofilter 
-  
-  checkov-pr-check:
-    if: github.event_name == 'pull_request'
-    name: Checkov on Pull Request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-         
-      - name: Run Checkov CLI test
-        continue-on-error: true
-        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o cli
-
-  infra:  # Create infrastructure for services on push to Develop branch
+  infra:
     if: github.event_name == 'push'
     name: infra
     runs-on: ubuntu-latest
