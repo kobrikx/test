@@ -8,10 +8,10 @@ env:
 on:
   push:
     branches:
-      - develop
+      - no
   pull_request:
     branches:
-      - develop
+      - no
 jobs:
   #This job compares folders and create condition to run job:
   changes:  
