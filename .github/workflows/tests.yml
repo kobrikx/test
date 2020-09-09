@@ -47,15 +47,14 @@ jobs:
           flags: "--module" # Add custom tflint flags
 
      
-  checkov-pr-check:
-    if: github.event_name == 'pull_request'
-    name: Checkov on Pull Request
+  Checkov:
+    name: Checkov
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Run Checkov CLI test
+      - name: Run Checkov
         continue-on-error: true
         run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o cli
         
