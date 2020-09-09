@@ -59,10 +59,16 @@ jobs:
       - name: Run Checkov
         run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
       
+#       - name: Publish Checkov Report
+#         uses: scacap/action-surefire-report@v1
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           report_paths: checkov.xml
+#           check_name: "Checkov test"
       - name: Publish Checkov Report
-        uses: scacap/action-surefire-report@v1
+        uses: ashley-taylor/junit-report-annotations-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          report_paths: checkov.xml
-          check_name: "Checkov test"
-        
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+          path: "checkov.xml"
+          includeSummary: true
+        if: always()
