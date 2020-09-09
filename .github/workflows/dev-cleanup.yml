@@ -1,4 +1,4 @@
-name: " ⏰⚡💣 [dev][scheduled] Infra & Apps Destroy 💣⚡⏰ "
+name: " ⏰⚡💣 [dev][scheduled] Infra & Apps Cleanup 💣⚡⏰ "
 defaults:
   run:
     shell: bash
