@@ -1,4 +1,4 @@
-name: "✅[dev] Tests✅"
+name: "[dev] Tests"
 defaults:
   run:
     shell: bash
@@ -57,5 +57,6 @@ jobs:
           submodules: true
 
       - name: Run Checkov
+        continue-on-error: true
         run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o cli
         
