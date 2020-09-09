@@ -42,7 +42,7 @@ jobs:
         uses: reviewdog/action-tflint@master
         with:
           github_token: ${{ secrets.github_token }}
-          working_directory: ".infra/env/${{ env.ENV }}"
+          working_directory: .infra/env/${{ env.ENV }}
           flags: "--module"
           reporter: github-pr-check
           filter_mode: "nofilter"
