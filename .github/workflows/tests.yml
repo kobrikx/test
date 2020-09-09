@@ -57,7 +57,7 @@ jobs:
           submodules: true
 
       - name: Run Checkov
-        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o junitxml > checkov.xml
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o junitxml
       - name: Save TF Output
         uses: actions/upload-artifact@v1
         with:
