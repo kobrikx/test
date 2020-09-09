@@ -16,36 +16,33 @@ on:
       - develop
 jobs:
   # Perform tests on pull request to develop branch
-  tflint:
-    name: runner / tflint
+  reviewdog-pr-check:
+    if: github.event_name == 'pull_request'
+    name: ReviewDog on Pull Request
     runs-on: ubuntu-latest
-
     steps:
-      - name: Clone repo
-        uses: actions/checkout@master
-
-      # Install latest Terraform manually as
-      #  Docker-based GitHub Actions are
-      #  slow due to lack of caching
-      # Note: Terraform is not needed for tflint
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup Terraform
         uses: autero1/action-terraform@v0.1.0
         with:
-          terraform_version: 0.12.20
+          terraform_version: 0.12.29    
 
-      # Run init to get module code to be able to use `--module`
       - name: Terraform init
         run: terraform init .infra/env/${{ env.ENV }}
 
-      # Minimal example
-      - name: tflint
-        uses: reviewdog/action-tflint@master
-        with:
-          github_token: ${{ secrets.github_token }}
-          working_directory: .infra/env/${{ env.ENV }}
-          flags: "--module"
-          reporter: github-pr-check
-          filter_mode: "nofilter"
+      - name: Setup ReviewDog
+        run: |
+          mkdir -p $HOME/bin && curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b $HOME/bin
+          echo ::add-path::$HOME/bin
+
+      - name: Run ReviewDog (github-pr-check)
+        continue-on-error: true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm --name tflint -v .infra/env/${{ env.ENV }}:/data -t wata727/tflint --format=checkstyle | reviewdog -f=checkstyle -reporter=github-pr-check -name=github-pr-check-info
+
   checkov-pr-check:
     if: github.event_name == 'pull_request'
     name: Checkov on Pull Request
@@ -186,3 +183,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path: results/tfplan.md
+
