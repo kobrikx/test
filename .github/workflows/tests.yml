@@ -57,21 +57,8 @@ jobs:
           submodules: true
 
       - name: Run Checkov
-        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o junitxml
-      - name: Save TF Output
-        uses: actions/upload-artifact@v1
-        with:
-          name: output
-          path: .infra/env/${{ env.ENV }}/checkov.xml
-     
-      - name: Load TF Output
-        uses: actions/download-artifact@v1
-        with:
-          name: checkov
-
-      - name: Extract TF Output
-        run: mv checkov/checkov.xml .infra/env/${{ env.ENV }}/checkov.xml
-
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
+      
       - name: Publish Checkov Report
         uses: scacap/action-surefire-report@v1
         with:
