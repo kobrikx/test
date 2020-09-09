@@ -1,4 +1,4 @@
-name: "[dev]Tests"
+name: "✅[dev] Tests✅"
 defaults:
   run:
     shell: bash
