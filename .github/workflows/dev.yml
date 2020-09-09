@@ -17,6 +17,7 @@ on:
 jobs:
 # Perform tests on pull request to develop branch
   tflint:
+    if: github.event_name == 'pull_request'
     name: runner / tflint
     runs-on: ubuntu-latest
 
