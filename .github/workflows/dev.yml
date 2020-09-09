@@ -44,6 +44,8 @@ jobs:
           github_token: ${{ secrets.github_token }}
           working_directory: ".infra/env/${{ env.ENV }}"
           flags: "--module"
+          reporter: github-pr-check
+          filter_mode: "nofilter"
   checkov-pr-check:
     if: github.event_name == 'pull_request'
     name: Checkov on Pull Request
