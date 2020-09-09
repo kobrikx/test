@@ -16,15 +16,14 @@ on:
       - develop
 jobs:
 # Perform tests on pull request to develop branch
-  tflint:
+  Tflint:
     if: github.event_name == 'pull_request'
     name: runner / tflint
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone repo
-        uses: actions/checkout@master
-
+      - name: Checkout
+        uses: actions/checkout@v2
       # Install latest Terraform manually as
       #  Docker-based GitHub Actions are
       #  slow due to lack of caching
@@ -44,7 +43,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
  #         working_directory: "testdata" # Optional. Change working directory
-          reporter: github-pr-check # Optional. Change reporter
+          reporter: github-pr-review # Optional. Change reporter
 #          fail_on_error: "true" # Optional. Fail action if errors are found
           filter_mode: "nofilter" # Optional. Check all files, not just the diff
           flags: "--module" # Optional. Add custom tflint flags
