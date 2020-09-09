@@ -1,0 +1,61 @@
+name: "[dev]Tests"
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_REGION: us-east-1
+  ENV: dev
+
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  # Perform tests on pull request to develop branch
+  Tflint:
+    name: Tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Create AWS Profile
+        run: make aws.profile  
+
+      - name: Terraform init
+        run: make terraform.init
+        shell: bash
+        
+      - name: tflint
+        uses: reviewdog/action-tflint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          working_directory: ".infra/env/${{ env.ENV }}" # You can change working directory
+          reporter: github-pr-review # You can change reporter
+          fail_on_error: "true" #  Fail action if errors are found
+          filter_mode: "nofilter" # Check all files, not just the diff
+          flags: "--module" # Add custom tflint flags
+
+     
+  checkov-pr-check:
+    if: github.event_name == 'pull_request'
+    name: Checkov on Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Checkov CLI test
+        continue-on-error: true
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -o cli
+        
