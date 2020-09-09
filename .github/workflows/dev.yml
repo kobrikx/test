@@ -25,7 +25,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
-
+      - name: Setup Terraform
+        uses: autero1/action-terraform@v0.1.0
+        with:
+          terraform_version: 0.12.20
       - name: Terraform init
         run: terraform init .infra/env/${{ env.ENV }}
 
