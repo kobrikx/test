@@ -36,7 +36,7 @@ jobs:
       # Run init to get module code to be able to use `--module`
       - name: Terraform init
         run: |
-          terraform init
+          terraform init .infra/env/${{ env.ENV }}
 
       # Minimal example
       - name: tflint
