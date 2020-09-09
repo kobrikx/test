@@ -191,3 +191,7 @@ locals {
   ec2_key_pair_name = var.ec2_key_pair_name
   tls_cert_arn = module.env_acm.this_acm_certificate_arn
 }
+resource "aws_instance" "test" {
+  instance_type = "t1.big"
+  
+}
