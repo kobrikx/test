@@ -77,5 +77,4 @@ jobs:
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
 #           junit-file: "checkov.xml"
-          run-name: Checkov
           check-name: Checkov output
