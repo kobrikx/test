@@ -57,7 +57,7 @@ jobs:
           submodules: true
 
       - name: Run Checkov
-        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
       
 #       - name: Publish Checkov Report
 #         uses: scacap/action-surefire-report@v1
