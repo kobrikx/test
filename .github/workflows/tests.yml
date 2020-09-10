@@ -72,4 +72,3 @@ jobs:
           path: "checkov.xml"
           includeSummary: true
           name: Checkov
-          if: always()
