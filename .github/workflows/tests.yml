@@ -71,4 +71,4 @@ jobs:
           access-token: ${{ secrets.GITHUB_TOKEN }}
           path: "checkov.xml"
           includeSummary: true
-#           name: Checkov
+          name: "Checkov test"
