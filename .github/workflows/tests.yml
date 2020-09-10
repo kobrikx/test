@@ -73,4 +73,3 @@ jobs:
           includeSummary: true
           name: Checkov
           if: always()
-
