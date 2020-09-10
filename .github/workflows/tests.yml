@@ -57,7 +57,7 @@ jobs:
           submodules: true
 
       - name: Run Checkov
-        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
+        run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > junit.xml
       
 #       - name: Publish Checkov Report
 #         uses: scacap/action-surefire-report@v1
@@ -76,6 +76,6 @@ jobs:
         uses: IgnusG/jest-report-action@v2.3.3
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
-          junit-file: checkov.xml
+#           junit-file: "checkov.xml"
           run-name: Checkov
           check-name: Checkov output
