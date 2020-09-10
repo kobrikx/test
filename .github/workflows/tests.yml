@@ -65,10 +65,17 @@ jobs:
 #           github_token: ${{ secrets.GITHUB_TOKEN }}
 #           report_paths: checkov.xml
 #           check_name: "Checkov test"
-      - name: Publish Checkov Report
-        uses: ashley-taylor/junit-report-annotations-action@master
+#       - name: Publish Checkov Report
+#         uses: ashley-taylor/junit-report-annotations-action@master
+#         with:
+#           access-token: ${{ secrets.GITHUB_TOKEN }}
+#           path: "checkov.xml"
+#           includeSummary: true
+#         if: always()
+      - name: Jest Github Action Reporter
+        uses: IgnusG/jest-report-action@v2.3.3
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
-          path: "checkov.xml"
-          includeSummary: true
-        if: always()
+          junit-file: checkov.xml
+          run-name: Checkov
+          check-name: Checkov output
