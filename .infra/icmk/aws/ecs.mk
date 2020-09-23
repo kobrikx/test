@@ -10,13 +10,17 @@ ECS_TASK_NAME ?= $(ENV)-$(SVC)
 DOCKER_REGISTRY ?= $(AWS_ACCOUNT).dkr.ecr.$(AWS_REGION).amazonaws.com
 DOCKER_IMAGE_NAME ?= $(NAMESPACE)-$(SVC)
 DOCKERFILE ?= Dockerfile
-PROJECT_PATH ?= projects/$(SVC)
 ECS_DEPLOY_VERSION ?= 1.10.1
 ENABLE_BUILDKIT ?= 1
 ENABLE_INLINE_CACHE ?= $(ENABLE_BUILDKIT)
+DOCKER_BUILD_ADDITIONAL_PARAMS ?=
+
+#ECS_SERVICE_TASK_NETWORK_CONFIG = $(shell cat $(INFRA_DIR)/env/$(ENV)/output.json | $(JQ) -rc '.$(shell echo $(SVC) | sed 's/-/_/g')_task_network_configuration.value')
+#ECS_SERVICE_TASK_LAUNCH_TYPE = $(shell cat $(INFRA_DIR)/env/$(ENV)/output.json | $(JQ) -rc '.$(shell echo $(SVC) | sed 's/-/_/g')_task_launch_type.value')
 
 ECS_SERVICE_TASK_NETWORK_CONFIG = $(shell $(AWS) --profile=$(AWS_PROFILE) ssm get-parameter --name "/$(ENV)/terraform-output" --with-decryption | $(JQ) -r '.Parameter.Value' | $(BASE64) -d | $(JQ) -rc '.$(shell echo $(SVC) | sed 's/-/_/g')_task_network_configuration.value')
 ECS_SERVICE_TASK_LAUNCH_TYPE = $(shell $(AWS) --profile=$(AWS_PROFILE) ssm get-parameter --name "/$(ENV)/terraform-output" --with-decryption | $(JQ) -r '.Parameter.Value' | $(BASE64) -d | $(JQ) -rc '.$(shell echo $(SVC) | sed 's/-/_/g')_task_launch_type.value')
+
 
 ECS_SERVICE_TASK_ID = $(shell $(AWS) ecs --profile $(AWS_PROFILE) run-task --cluster $(ECS_CLUSTER_NAME) --task-definition "$(ECS_SERVICE_TASK_DEFINITION_ARN)" --network-configuration '$(ECS_SERVICE_TASK_NETWORK_CONFIG)' --launch-type "$(ECS_SERVICE_TASK_LAUNCH_TYPE)" | $(JQ) -r '.tasks[].taskArn' | $(REV) | $(CUT) -d'/' -f1 | $(REV) && sleep 1)
 ECS_SERVICE_TASK_DEFINITION_ARN = $(shell $(AWS) ecs --profile $(AWS_PROFILE) describe-task-definition --task-definition $(ECS_TASK_NAME) | $(JQ) -r '.taskDefinition.taskDefinitionArn')
@@ -33,7 +37,9 @@ CMD_ECS_SERVICE_DOCKER_BUILD = DOCKER_BUILDKIT=$(ENABLE_BUILDKIT) $(DOCKER) buil
 	--build-arg DOCKER_IMAGE_NAME=$(DOCKER_IMAGE_NAME) \
 	--build-arg ENV=$(ENV) \
 	--build-arg BUILDKIT_INLINE_CACHE=$(ENABLE_INLINE_CACHE) \
-	--build-arg PROJECT_PATH=$(PROJECT_PATH)
+	--build-arg PROJECT_PATH=$(PROJECT_PATH) \
+	$(DOCKER_BUILD_ADDITIONAL_PARAMS)
+
 
 CMD_ECS_SERVICE_DOCKER_PUSH = \
 	$(DOCKER) push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(TAG) && \
@@ -47,7 +53,7 @@ CMD_ECS_SERVICE_DESTROY = echo "Destroy $(SVC) is not implemented"
 CMD_ECS_SERVICE_LOCAL_UP = $(ECS_CLI) local up --task-def-remote $(ECS_SERVICE_TASK_DEFINITION_ARN)
 CMD_ECS_SERVICE_LOCAL_DOWN = $(ECS_CLI) local down --task-def-remote $(ECS_SERVICE_TASK_DEFINITION_ARN)
 
-CMD_ECS_SERVICE_BIN = $(DOCKER) run -it --rm $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(TAG) $(SVC)
+CMD_ECS_SERVICE_DOCKER_RUN = $(DOCKER) run --rm $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(TAG)
 
 ECS ?= $(DOCKER) run -v $(HOME)/.aws/:/root/.aws -i fabfuel/ecs-deploy:$(ECS_DEPLOY_VERSION) ecs
 ECS_CLI ?= $(DOCKER) run \

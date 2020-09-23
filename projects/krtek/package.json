@@ -1,0 +1,11 @@
+{
+  "name": "krtek",
+  "version": "1.0.0",
+  "description": "Simple HTTP GET endpoint with python",
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-attach-managed-policy": "0.0.7",
+    "serverless-domain-manager": "^4.2.2"
+  }
+}

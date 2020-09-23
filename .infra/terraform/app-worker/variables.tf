@@ -1,5 +1,4 @@
-variable "env" {
-}
+variable "env" {}
 
 variable "namespace" {}
 
@@ -8,14 +7,17 @@ variable "name" {}
 variable "ecs_service_name" {
   default = ""
 }
+
 variable "ecs_platform_version" {
   default = "LATEST"
 }
+
 variable "service_type" {
-  default = "web"
+  default = "worker"
 }
+
 variable "service_group" {
-  default = "web"
+  default = "worker"
 }
 
 variable "instance_type" {
@@ -29,7 +31,7 @@ variable "environment" {
 
 variable "public" {
   # TOOD: this should be changed to false when all services assume that
-  default = true
+  default = false
 }
 
 variable "secret_names" {
@@ -57,11 +59,10 @@ variable "root_domain_name" {
 variable "domain_names" {
   default = []
 }
+
 variable "zone_id" {}
 
 variable "vpc_id" {}
-
-variable "alb_security_groups" {}
 
 variable "docker_registry" {}
 
@@ -70,7 +71,6 @@ variable "docker_image_tag" {}
 variable "docker_image_name" {
   default = ""
 }
-
 
 variable "docker_container_port" {
   default = 3000
@@ -81,21 +81,20 @@ variable "docker_container_command" {
   default = []
 }
 
-variable "ecs_cluster_name" {
-  default = ""
-}
 
 variable "ecs_launch_type" {
   default = "FARGATE"
 }
 
+variable "ecs_cluster_name" {
+  default = ""
+}
+
+
 variable "health_check_type" {
   default = "EC2"
 }
 
-variable "alb_health_check_path" {
-  default = "/health"
-}
 
 variable "min_size" {
   default = 1
@@ -107,6 +106,10 @@ variable "max_size" {
 
 variable "desired_capacity" {
   default = 1
+}
+
+variable "deployment_minimum_healthy_percent" {
+  default = 50
 }
 
 variable "datadog_enabled" {
@@ -127,6 +130,11 @@ variable "memory" {
   description = "Fargate Memory value (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html)"
 }
 
+
+variable "gpu" {
+  default = 0
+}
+
 variable "aws_service_discovery_private_dns_namespace" {
   default = ""
 }
@@ -139,9 +147,6 @@ variable "ecs_network_mode" {
   default = "awsvpc"
 }
 
-variable "tls_cert_arn" {
-}
-
 variable "create_ecr_repo" {
   default = false
 }
@@ -150,20 +155,43 @@ variable "ecr_repo_name" {
   default = ""
 }
 
-variable "alb_health_check_valid_response_codes" {
-  default = "200-399"
+variable "resource_requirements" {
+  default = []
+}
+
+variable "root_block_device_size" {
+  default = "50"
+}
+
+variable "root_block_device_type" {
+  default = "gp2"
 }
 
 variable "volumes" {
   default = []
 }
 
+variable "efs_enabled" {
+  default = false
+}
+
 variable "efs_mount_point" {
   default = "/mnt/efs"
 }
 
-variable "ecs_service_lifecycle_ignore" {
-  default = []
+variable "efs_root_directory" {
+  default = "/"
+}
+
+variable "ecs_service_deployed" {
+  default = false
+}
+
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+variable "schedule_expression" {
+  description = "List of Cron-like Cloudwatch Event Rule schedule expressions"
+  type        = list
+  default     = []
 }
 
 locals {
@@ -172,8 +200,28 @@ locals {
   name_prefix      = "${substr(var.name, 0, 5)}-"
   namespace        = "${var.env}-${var.namespace}"
   ecs_cluster_name = var.ecs_cluster_name != "" ? var.ecs_cluster_name : local.namespace
-  domain_names     = ["${var.name}.${var.env}.${var.root_domain_name}"]
-  ecr_repo_name    = var.ecr_repo_name != "" ? var.ecr_repo_name : "${var.namespace}-${var.name}"
-  // TODO: Replace with a dynamic port from a module
-  cloud9_port = 8000
+  //domain_names    = concat( ["${var.name}.${var.env}.${var.root_domain_name}"], var.domain_names)
+  domain_names  = ["${var.name}.${var.env}.${var.root_domain_name}"]
+  ecr_repo_name = var.ecr_repo_name != "" ? var.ecr_repo_name : "${var.namespace}-${var.name}"
+
+  volumes = var.efs_enabled ? [
+    {
+      "name" = "efs",
+      "mount_point" = {
+        "sourceVolume"  = "efs"
+        "containerPath" = var.efs_mount_point,
+        "readOnly"      = null
+      }
+
+      efs_volume_configuration = [
+        {
+          file_system_id : module.efs.id
+          root_directory : var.efs_root_directory
+          transit_encryption : "ENABLED"
+          transit_encryption_port : 2999
+          authorization_config = {}
+        }
+      ]
+    }
+  ] : []
 }

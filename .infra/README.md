@@ -1,67 +1,83 @@
-# Infrastructure as Code Make Framework
+# Infrastructure as Code
 
-This framework is an attempt to create a convenient way to manage Infrastructure as Code with low barrier of entry for the Runner.
+This directory contains infrastructure configuration that is required to deploy full environment from scratch, as long as you have proper AWS credentials and AWS *devEnvironmentName* tag configured.
+You can also `export ENV="<your-env-name>"` to deploy a custom env.
+Let's assume for the purpose of this guide your `ENV` is `dev`. Whenever you'd like to change the environment, do the whole guide from the very beginning, at least once.
 
-The idea is to use [GNU Make](https://www.gnu.org/software/make/) as a vehicle for wrapping the complexity and presenting a nice Runner Experience. 
+## Creating your personal dev environment
+### 1. Obtain AWS credentials
+- Username / Password
+- AWS Access Key / AWS Access Secret
+- Request *devEnvironmentName* tag to be set in [AWS IAM](https://console.aws.amazon.com/iam/) by AWS administrator - this will be your default dev environment name
 
-This way, a coherent set of commands can be used locally or on the CI, as simple as:
-```shell script
-make deploy # One-stop command that deploys everything from scratch in a right order. Infra, Applications, etc.
+### 2. Configure AWS profile:
+__Note: Profile name can be different, but must remain consistent everywhere. It is also NOT recommended to use `default` profile, do to possible mixups with different accounts in the future.__
 ```
-Or
-```shell script
-make infra # Deploys the whole infrastructure (Terraform)
-make api # Builds a Docker image, Pushes it to Docker registry and deploys ECS service
-make secrets # Pushes secrets to SSM
-```
-Or
-```shell script
-make tunnel # Creates an SSH tunnel via bastion host
+aws configure --profile infra-dev
 ```
 
-# Quickstart
-This `init` onliner will download and configure icmk in your directory. (Defaults to .infra/icmk, customizable).
+And enter when prompted:
+- AWS Your Access key
+- AWS Your Secret Key
+- Region (`us-east-1`)
+
+### 3. Export AWS profile name
 ```shell script
-make init -f $(curl -Ls https://hzl.xyz/icmk > $TMPDIR/icmk.mk && echo "$TMPDIR/icmk.mk")
+export AWS_PROFILE=infra-dev
+```
+It us suggested that you could also use [direnv](https://direnv.net/) to set `AWS_PROFILE` when cd'ed into project directory.
+Remember, it is crucial to be sure which AWS credentials you are using.
+
+### 4. Deploy the environment to AWS
+```shell script
+make use # Only when using the ENV for the first time
+make infra
 ```
 
-## Populate sample config
-This will create the following:
-- Sample `Makefile`, which you can (and should) customize
-- Sample .envrc (which you can use with [direnv](https://github.com/direnv/direnv))
-- Sample Terraform environment structure under `.infra/env/testnut` which has a demo of bastion host and ssh tunnel. It forwards `localhost:222` to `bastion:22`. See `make tunnel.up` and `make tunnel.down`
-- Sample secrets directory that is used to push secrets to SSM via `make secrets`. Make sure to keep your `secrets/*.json` files out of git. 
-
-This won't create:
-- Anything else.
-
+### 5. Deploy an App
+__Every app deployment is described in Makefile.__
+Assuming we're building and deploying current commit of _app_:
 ```shell script
-make examples.simple
+make app
 ```
 
-# Whats Wrong With Shell Scripts?
-Shell scripts do the job, but eventually they loose the coherency by turning into bash spaghetti. Makefiles are declarative and have ability to have dependencies. Also, GNU Make can be modular, which allows to build good Runner Experience with abstractions. There is more, but if this is not enough, feel free to submit a Github Issue with any questions or concerns.
+### 6. Secrets
+__We use AWS Parameter Store (from SSM) to store secrets and integrate them with ECS__
+In order to add secrets for your service, create a local json file with secrets in .infra/secrets/ and then:
+```shell script
+make secrets
+```
 
-## Ensure your Terraform has required outputs
-This framework heavily relies on Terraform to get different values. It stores them in `output.json` and then reads them as needed. 
+Or for web app individually:
+```shell script
+make app.secrets
+```
 
-Additional options to store `output.json` in SSM or Parameter Store or s3 bucket are not implemented yet (which will help with user permissions)
+### 7. One-liner (optional)
+This one-liner will deploy infrastructure and app(s) (but not secrets)
+```shell script
+make deploy
+```
+ 
+### 8. Private Network Access
+__Currently we use bastion host for access to the internal resources inside of the VPC.__
+In order to be able to access internal services and databases we need to create a ssh tunnel
 
-# Features
-Currently, main features include
-- Terraform
-- AWS
-- Docker
-- ECS
-- SSH Tunnel
+```shell script
+make tunnel
+```
 
-# Dependencies
-The only dependencies you'd need:
-- GNU Make
-- Git
-- Docker
+### Other Tunnel Commands
+```
+# Establish a tunnel
+make tunnel.up
 
-# Disclaimer
-This framework is inspired by the principles of delivering a good Runner Experience. It is provided as-is.
+# Stop a tunnel
+make tunnel.down
 
-\*This is nothing close to a complete framework: lots of features are still missing, naming and structuring can be improved. Even though it works, use it on your own risk. PRs are welcome! 
+# Tunnel status
+make tunnel.status
+```
+
+## Diagram
+![](./Infra.svg)

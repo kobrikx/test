@@ -4,9 +4,7 @@ SSH_PUBLIC_KEY ?= $(shell cat ~/.ssh/id_rsa.pub)
 EC2_KEY_PAIR_NAME ?= $(ENV)-$(NAMESPACE)
 ENV_DIR ?= $(INFRA_DIR)/env/$(ENV)
 OUTPUT_JSON_FILE = $(INFRA_DIR)/env/$(ENV)/output.json
-#OUTPUT_JSON_BASE64 = $(shell cat $(OUTPUT_JSON_FILE) | $(BASE64))
-#OUTPUT_JSON_FILE2 = $(shell cat $(OUTPUT_JSON_FILE))
-TERRAFORM_VERSION ?= "0.12.29" 
+TERRAFORM_VERSION ?= "0.12.29"
 
 # Terraform Backend Config
 TERRAFORM_STATE_KEY = $(ENV)/terraform.tfstate
@@ -16,7 +14,8 @@ TERRAFORM_STATE_BUCKET_NAME ?= $(NAMESPACE)-tf-state
 CHECKOV ?= $(DOCKER) run -v $(ENV_DIR):/tf -i bridgecrew/checkov -d /tf -s
 TFLINT ?= $(DOCKER) run --rm -v $(ENV_DIR):/data -t wata727/tflint
 TERRAFORM ?= $(DOCKER) run --rm -v $(ENV_DIR):/$(ENV_DIR) -v "$(ENV_DIR)/.terraform":/"$(ENV_DIR)/.terraform" -v "$(INFRA_DIR)":"$(INFRA_DIR)" -v ~/.aws/:/root/.aws:ro -w $(ENV_DIR) -e AWS_PROFILE=$(AWS_PROFILE) -e ENV=$(ENV) hashicorp/terraform:$(TERRAFORM_VERSION)
-CMD_SAVE_OUTPUT_TO_SSM = $(AWS) --profile "$(AWS_PROFILE)" ssm put-parameter --name "/$(ENV)/terraform-output" --type "SecureString" --data-type "text" --overwrite --value "$$(cat $(OUTPUT_JSON_FILE) | $(BASE64))" && echo "\033[32m[OK]\033[0m Terraform output saved to ssm://$(ENV)/terraform-output" || echo "\033[31m[ERROR]\033[0m Terraform output saving failed"
+
+CMD_SAVE_OUTPUT_TO_SSM = $(AWS) --profile "$(AWS_PROFILE)" ssm put-parameter --name "/$(ENV)/terraform-output" --type "SecureString" --tier "Intelligent-Tiering" --data-type "text" --overwrite --value "$$(cat $(OUTPUT_JSON_FILE) | $(BASE64))" > /dev/null && echo "\033[32m[OK]\033[0m Terraform output saved to ssm://$(ENV)/terraform-output" || echo "\033[31m[ERROR]\033[0m Terraform output saving failed"
 
 # Tasks
 ########################################################################################################################
@@ -45,7 +44,7 @@ terraform.init: gomplate terraform
 terraform.apply: terraform.plan ## Deploy infrastructure
 	@ cd $(ENV_DIR) && \
 	$(TERRAFORM) apply -input=false tfplan && \
-	$(TERRAFORM) output -json > output.json && \
+	$(TERRAFORM) output -json > output.json	&& \
 	$(CMD_SAVE_OUTPUT_TO_SSM)
 
 terraform.checkov: ## Test infrastructure with checkov
@@ -85,7 +84,7 @@ terraform.output-to-ssm: ## Manual upload output.json to AWS SSM. Output.json en
 terraform.plan: terraform.init ## Terraform plan output for Github Action
 	@ cd $(ENV_DIR) && \
 	$(TERRAFORM) plan -out=tfplan -input=false && \
-	$(TERRAFORM) show tfplan -input=false -no-color > $(ENV_DIR)/tfplan.txt
+	$(TERRAFORM) show tfplan -input=false -no-color > $(ENV_DIR)/tfplan.txt && \
 	cat $(ICMK_TEMPLATE_TERRAFORM_TFPLAN) | $(GOMPLATE) > $(ENV_DIR)/tfplan.md
 
 env.use: terraform jq

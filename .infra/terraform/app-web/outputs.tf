@@ -5,10 +5,10 @@ output "this_target_group_arn" {
 output "this_task_definition_arn" {
   value = module.service.this_task_definition_arn
 }
+
 output "cloudwatch_log_group" {
   value = module.service.cloudwatch_log_group
 }
-
 
 output "alb_dns_name" {
   value = module.alb.this_lb_dns_name
@@ -17,4 +17,3 @@ output "alb_dns_name" {
 output "alb_dns_zone" {
   value = module.alb.this_lb_zone_id
 }
-

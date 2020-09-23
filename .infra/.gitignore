@@ -1,0 +1,20 @@
+
+env/*/secrets/*.json
+!env/*/secrets/example-service.json
+
+
+# Infra
+.terraform
+.retry
+__pycache__
+terraform*.tfstate
+*.tfvars
+backend.tf
+output.json
+tfplan*
+
+env/*
+!env/*dev
+!env/*prod
+
+ssh.config

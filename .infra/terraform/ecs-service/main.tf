@@ -1,49 +1,38 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
-locals {
-  web_service_types = ["web", "api", "proxy", "squibby"]
-//  secret_names = concat(var.secret_names, [])
-  environment = merge(var.environment, {})
-  port_mappings = (contains(local.web_service_types, var.service_type) ?
-  [
-    {
-      containerPort = var.docker_container_port,
-      // In case of bridge an host use a dynamid port (0)
-      hostPort = var.ecs_network_mode == "awsvpc" ? var.docker_container_port : 0
-    }
-  ] : [] )
-}
-
 module "task" {
   source = "../ecs-task"
-  env = var.env
-  name = var.name
-  ecs_launch_type = var.ecs_launch_type
-  docker_image_name = var.docker_image_name
-  docker_image_tag = var.docker_image_tag
-  docker_container_entrypoint = (var.docker_container_entrypoint == [] ? [] : var.docker_container_entrypoint)
-  docker_container_command = (var.docker_container_command == [] ? [] : var.docker_container_command)
-  environment = var.environment
-//  secret_names = local.secret_names
-  port_mappings = local.port_mappings
-  cpu = var.cpu
-  memory = var.memory
-  iam_role_policy_statement = var.iam_role_policy_statement
+
+  env                           = var.env
+  name                          = var.name
+  ecs_task_family_name          = var.ecs_service_name != "" ? var.ecs_service_name : ""
+  ecs_launch_type               = var.ecs_launch_type
+  docker_image_name             = var.docker_image_name
+  docker_image_tag              = var.docker_image_tag
+  docker_container_entrypoint   = (var.docker_container_entrypoint == [] ? [] : var.docker_container_entrypoint)
+  docker_container_command      = (var.docker_container_command == [] ? [] : var.docker_container_command)
+  docker_container_depends_on   = var.docker_container_depends_on
+  environment                   = var.environment
+  resource_requirements         = var.resource_requirements
+  secret_names                  = local.secret_names
+  port_mappings                 = local.port_mappings
+  cpu                           = var.cpu
+  memory                        = var.memory
+  volumes                       = var.volumes
+  iam_role_policy_statement     = var.iam_role_policy_statement
   sidecar_container_definitions = var.sidecar_container_definitions
-  ecs_network_mode = var.ecs_network_mode
+  ecs_network_mode              = var.ecs_network_mode
 }
 
 
 resource "aws_service_discovery_service" "this" {
-  name = var.name
   count = var.ecs_service_discovery_enabled ? 1 : 0
 
+  name = var.name
+
   dns_config {
-    namespace_id = var.ecs_service_discovery_enabled ? var.aws_service_discovery_private_dns_namespace.id : ""
+    namespace_id   = var.ecs_service_discovery_enabled ? var.aws_service_discovery_private_dns_namespace.id : ""
     routing_policy = "MULTIVALUE"
     dns_records {
-      ttl = 10
+      ttl  = 10
       type = "A"
     }
 
@@ -57,27 +46,30 @@ resource "aws_service_discovery_service" "this" {
   }
 }
 
+// This service resource has task definition lifecycle policy, so terraform is NOT used to deploy it (ecs cli used instead)
 resource "aws_ecs_service" "this" {
-  name = "${var.env}-${var.name}"
-  cluster = var.ecs_cluster
-  task_definition = module.task.task_definition_arn
-  desired_count = var.service_desired_count
-  launch_type = var.ecs_launch_type
-
+  count                              = var.ecs_service_deployed ? 0 : 1
+  name                               = var.ecs_service_name != "" ? var.ecs_service_name : "${var.env}-${var.name}"
+  platform_version                   = var.ecs_platform_version
+  cluster                            = var.ecs_cluster_name
+  task_definition                    = module.task.task_definition_arn
+  desired_count                      = var.service_desired_count
+  launch_type                        = var.ecs_launch_type
+  deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
   dynamic "service_registries" {
     for_each = (var.ecs_launch_type == "FARGATE" && var.ecs_service_discovery_enabled) ? [1] : []
     content {
       registry_arn = var.ecs_service_discovery_enabled ? aws_service_discovery_service.this.arn : ""
-      port = var.docker_container_port
+      port         = var.docker_container_port
     }
   }
 
   dynamic "network_configuration" {
     for_each = var.ecs_launch_type == "FARGATE" ? [1] : []
     content {
-      subnets = var.subnets
-      security_groups = var.security_groups
+      subnets          = var.subnets
+      security_groups  = var.security_groups
       assign_public_ip = var.assign_public_ip
     }
   }
@@ -91,6 +83,20 @@ resource "aws_ecs_service" "this" {
     }
   }
 
+  dynamic "load_balancer" {
+    for_each = [for p in var.alb_aux_ports : {
+      name         = p.name
+      port         = p.port
+      target_group = p.target_group
+    }]
+
+    content {
+      target_group_arn = load_balancer.value.target_group
+      container_name   = load_balancer.value.name
+      container_port   = load_balancer.value.port
+    }
+  }
+
   dynamic "placement_constraints" {
     for_each = var.ecs_launch_type == "EC2" ? [1] : []
     content {
@@ -99,16 +105,111 @@ resource "aws_ecs_service" "this" {
     }
   }
 
-  // Do not overwite external updates back to Terraform value
-  // This means we only set that value once - during creation.
+  //   Do not overwite external updates back to Terraform value
+  //   This means we only set that value once - during creation.
   lifecycle {
     ignore_changes = [
       // Ignore as we use SCALE to change the settings.
-//      desired_count,
+      //desired_count,
       // Ignore Task Definition ARN changes.
       // Every time we deploy via ecs-deploy and then run Terraform
-      //   we will keep the Task Definition deployed with via ecs-delploy
+      // we will keep the Task Definition deployed with via ecs-delploy
       task_definition
     ]
+  }
+}
+
+// This service resource doesn't have task definition lifecycle policy, so terraform is used to deploy it (instead of ecs cli)
+resource "aws_ecs_service" "this_deployed" {
+  count                              = var.ecs_service_deployed ? 1 : 0
+  name                               = var.ecs_service_name != "" ? var.ecs_service_name : "${var.env}-${var.name}"
+  platform_version                   = var.ecs_platform_version
+  cluster                            = var.ecs_cluster_name
+  task_definition                    = module.task.task_definition_arn
+  desired_count                      = var.service_desired_count
+  launch_type                        = var.ecs_launch_type
+  deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
+
+  dynamic "service_registries" {
+    for_each = (var.ecs_launch_type == "FARGATE" && var.ecs_service_discovery_enabled) ? [1] : []
+    content {
+      registry_arn = var.ecs_service_discovery_enabled ? aws_service_discovery_service.this.arn : ""
+      port         = var.docker_container_port
+    }
+  }
+
+  dynamic "network_configuration" {
+    for_each = var.ecs_launch_type == "FARGATE" ? [1] : []
+    content {
+      subnets          = var.subnets
+      security_groups  = var.security_groups
+      assign_public_ip = var.assign_public_ip
+    }
+  }
+
+  dynamic "load_balancer" {
+    for_each = local.port_mappings
+    content {
+      target_group_arn = var.target_group_arn
+      container_name   = var.name
+      container_port   = var.docker_container_port
+    }
+  }
+
+  dynamic "load_balancer" {
+    for_each = [for p in var.alb_aux_ports : {
+      name         = p.name
+      port         = p.port
+      target_group = p.target_group
+    }]
+
+    content {
+      target_group_arn = load_balancer.value.target_group
+      container_name   = load_balancer.value.name
+      container_port   = load_balancer.value.port
+    }
+  }
+
+  dynamic "placement_constraints" {
+    for_each = var.ecs_launch_type == "EC2" ? [1] : []
+    content {
+      type       = "memberOf"
+      expression = "attribute:service-group == ${var.service_group}"
+    }
+  }
+
+  lifecycle {
+    ignore_changes = []
+  }
+}
+
+# CloudWatch Event
+resource "aws_cloudwatch_event_rule" "this" {
+  count = length(var.schedule_expression)
+
+  name                = var.ecs_service_name != "" ? "${var.ecs_service_name}-${count.index}" : "${var.env}-${var.name}-${count.index}"
+  description         = "Cloudwatch event rule for ECS Scheduled Task"
+  schedule_expression = var.schedule_expression[count.index]
+}
+
+resource "aws_cloudwatch_event_target" "this" {
+  count = length(var.schedule_expression)
+
+  target_id = var.ecs_service_name != "" ? "${var.ecs_service_name}-${count.index}" : "${var.env}-${var.name}-${count.index}"
+  arn       = data.aws_ecs_cluster.current.arn
+  rule      = aws_cloudwatch_event_rule.this[count.index].name
+  role_arn  = aws_iam_role.ecs_events[0].arn
+
+  ecs_target {
+    launch_type         = var.ecs_launch_type
+    task_count          = var.service_desired_count
+    task_definition_arn = module.task.task_definition_arn
+    platform_version    = var.ecs_platform_version
+
+    network_configuration {
+      assign_public_ip = var.assign_public_ip
+      security_groups  = var.security_groups
+      subnets          = var.subnets
+    }
   }
 }

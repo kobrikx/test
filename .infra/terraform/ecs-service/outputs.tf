@@ -7,7 +7,7 @@ output "name" {
 }
 
 output "ecs_cluster" {
-  value = var.ecs_cluster
+  value = var.ecs_cluster_name
 }
 
 output "secrets" {

@@ -1,6 +1,6 @@
 # TODO: encapsulate everything into modules, like "api" or "job" which would use terraform locals
 
-variable "env" { }
+variable "env" {}
 
 variable "namespace" {
   default = "nutcorp"
