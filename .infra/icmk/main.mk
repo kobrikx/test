@@ -1,5 +1,9 @@
-#-include $(INFRA_DIR)/env/$(ENV)/*.mk
-#include $(INFRA_DIR)/icmk/*/*.mk
+# Environment Validation
+########################################################################################################################
+ifndef ENV
+$(error Please set ENV via `export ENV=<env_name>` or use direnv)
+endif
+
 
 -include $(INFRA_DIR)/env/$(ENV)/*.mk
 include $(INFRA_DIR)/icmk/*/*.mk
@@ -19,6 +23,7 @@ ICMK_TEMPLATE_TERRAFORM_TFPLAN = $(INFRA_DIR)/icmk/terraform/templates/terraform
 # We are using a tag from AWS User which would tell us which environment this user is using. You can always override it.
 ENV ?= $(AWS_DEV_ENV_NAME)
 ENV_DIR ?= $(INFRA_DIR)/env/$(ENV)
+PROJECT_PATH ?= projects/$(SVC)
 
 # Tasks
 ########################################################################################################################
@@ -102,14 +107,6 @@ endif
 jq:
 ifeq (, $(JQ))
 	$(error "jq is not installed or incorrectly configured.")
-endif
-
-ifndef ENV
-$(error Please set ENV via `export ENV=<env_name>` or use direnv)
-endif
-
-ifndef AWS_PROFILE
-$(error Please set AWS_PROFILE via `export AWS_PROFILE=<aws_profile>` or use direnv)
 endif
 
 # This is a workaround for syntax highlighters that break on a "Comment" symbol.
