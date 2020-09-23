@@ -54,11 +54,11 @@ jobs:
         run: make infra
         shell: bash
 
-      - name: Save TF Output
-        uses: actions/upload-artifact@v1
-        with:
-          name: output
-          path: .infra/env/${{ env.ENV }}/output.json
+#       - name: Save TF Output
+#         uses: actions/upload-artifact@v1
+#         with:
+#           name: output
+#           path: .infra/env/${{ env.ENV }}/output.json
 
   squibby:
 #     if: github.event_name == 'push'
@@ -82,13 +82,13 @@ jobs:
       - name: Create AWS Profile
         run: make aws.profile
 
-      - name: Load TF Output
-        uses: actions/download-artifact@v1
-        with:
-          name: output
+#       - name: Load TF Output
+#         uses: actions/download-artifact@v1
+#         with:
+#           name: output
 
-      - name: Extract TF Output
-        run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+#       - name: Extract TF Output
+#         run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
 
       - name: Login to ECR
         run: make ecr.login
