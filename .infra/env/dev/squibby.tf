@@ -9,7 +9,8 @@ module "squibby" {
   cloud9_enabled        = false
   ecs_launch_type       = "FARGATE"
   alb_health_check_path = "/"
-
+  create_ecr_repo       = true
+  
   domain_names = [
     "api.${var.root_domain_name}"
   ]
