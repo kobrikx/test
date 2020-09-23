@@ -11,7 +11,7 @@ on:
   push:
     branches:
       - develop
-
+  workflow_dispatch:
 jobs:
 
   infra:  # Create infrastructure for services on push to Develop branch
