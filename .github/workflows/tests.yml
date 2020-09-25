@@ -86,7 +86,7 @@ jobs:
         run: make aws.profile
 
       - name: juju
-        run: echo $GITHUB_SHA | cut -c1-8 > .infra/env/${{ env.ENV }}/sha.txt
+        run: echo $GITHUB_SHA | cut -c1-8 > /temp/sha.txt
 
       - name: Terraform Plan
         run: make terraform.plan
