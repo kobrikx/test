@@ -7,7 +7,6 @@ env:
   AWS_REGION: us-east-1
   ENV: dev
   SHORT_SHA: ${GITHUB_SHA}
-  GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
   GITHUB_ACTOR: ${GITHUB_ACTOR}     
 on:
   pull_request:
@@ -71,6 +70,9 @@ jobs:
   terraform_plan:
     name: Create Terraform Plan
     runs-on: ubuntu-latest
+    env:
+      SHORT_SHA: ${GITHUB_SHA}
+      GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -83,23 +85,16 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
-
+          ref: ${{ github.event.pull_request.head.sha }}
+          
       - name: Create AWS Profile
         run: make aws.profile
-
-      - uses: FranzDiebold/github-env-vars-action@v1.2.0
-      - name: Print environment variables
+        
+      - name: Get Commit Message
         run: |
-         echo "GITHUB_REPOSITORY_SLUG=$GITHUB_REPOSITORY_SLUG"
-         echo "GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER"
-         echo "GITHUB_REPOSITORY_OWNER_SLUG=$GITHUB_REPOSITORY_OWNER_SLUG"
-         echo "GITHUB_REPOSITORY_NAME=$GITHUB_REPOSITORY_NAME"
-         echo "GITHUB_REPOSITORY_NAME_SLUG=$GITHUB_REPOSITORY_NAME_SLUG"
-         echo "GITHUB_REF_SLUG=$GITHUB_REF_SLUG"
-         echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
-         echo "GITHUB_REF_NAME_SLUG=$GITHUB_REF_NAME_SLUG"
-         echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT"
-
+          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+          echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+          
       - name: Terraform Plan
         run: make terraform.plan
         shell: bash
