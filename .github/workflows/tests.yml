@@ -6,7 +6,7 @@ defaults:
 env:
   AWS_REGION: us-east-1
   ENV: dev
-  short_sha: $(echo ${GITHUB_SHA} | cut -c1-8)
+  SHORT_SHA: $(echo ${GITHUB_SHA} | cut -c1-8)
           
 on:
   pull_request:
