@@ -6,8 +6,8 @@ defaults:
 env:
   AWS_REGION: us-east-1
   ENV: dev
-  SHORT_SHA: $(echo ${GITHUB_SHA} | cut -c1-8)
-          
+  SHORT_SHA: ${GITHUB_SHA}
+  GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}       
 on:
   pull_request:
     branches:
