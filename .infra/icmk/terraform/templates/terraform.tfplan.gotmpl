@@ -1,5 +1,5 @@
-### Terraform Changes  {{env.ExpandEnv "(${SHORT_SHA}) by"}} <a href="{{env.ExpandEnv "https://github.com/${GITHUB_ACTOR}"}}">{{env.ExpandEnv "${GITHUB_ACTOR}"}}</a>
-{{env.ExpandEnv "On commit:${COMMIT_MESSAGE}"}}
+### Terraform Changes  {{if .Env.SHORT_SHA}}{{ .Env.SHORT_SHA "by " }}{{else}} {{end}} {{if .Env.GITHUB_ACTOR}}{{ "<a href=https://github.com/" .Env.GITHUB_ACTOR ">" .Env.GITHUB_ACTOR "</a"  }}{{else}} {{end}}
+{{if .Env.COMMIT_MESSAGE}}{{ "On commit: " .Env.COMMIT_MESSAGE }}{{else}} {{end}}
 <details><summary>Expand to view details</summary><p>
 
 ```
@@ -7,4 +7,3 @@
 ```
 
 </p></details>
-
