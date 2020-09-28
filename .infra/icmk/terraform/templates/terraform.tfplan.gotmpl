@@ -1,5 +1,5 @@
 ### Terraform Changes  {{env.ExpandEnv "with sha: ${SHORT_SHA}"}}
-  on event:   {{if .Env.GITHUB_EVENT_NAME}}{{ .Env.GITHUB_EVENT_NAME }}{{else}}jopka{{end}}
+{{env.ExpandEnv "on event: ${GITHUB_EVENT_NAME}"}}
 <details><summary>Expand to view details</summary><p>
 
 ```
