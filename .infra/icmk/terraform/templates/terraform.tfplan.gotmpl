@@ -1,4 +1,5 @@
 ### Terraform Changes   {{if .Env.SHORT_SHA}}{{ "with sha:" .Env.SHORT_SHA }}{{else}}huhu{{end}}
+    {{if .Env.GITHUB_EVENT_NAME}}{{ "on event:" .Env.GITHUB_EVENT_NAME }}{{else}}jopka{{end}}
 <details><summary>Expand to view details</summary><p>
 
 ```
