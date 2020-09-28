@@ -99,6 +99,8 @@ jobs:
          echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT"
 
       - name: Terraform Plan
+        env:
+          short_sha: ${GITHUB_SHA::8}
         run: make terraform.plan
         shell: bash
 
