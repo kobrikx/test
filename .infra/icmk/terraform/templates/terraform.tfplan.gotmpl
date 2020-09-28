@@ -1,4 +1,4 @@
-### Terraform Changes   {{env.ExpandEnv "with sha: $GITHUB_SHA_SHORT"}}
+### Terraform Changes   {{if "$GITHUB_SHA_SHORT"}}{{ "with sha: $GITHUB_SHA_SHORT" }}{{else}} huhu {{end}}
 <details><summary>Expand to view details</summary><p>
 
 ```
