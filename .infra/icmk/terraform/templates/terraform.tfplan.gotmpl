@@ -1,4 +1,4 @@
-### Terraform Changes   {{ .Env.AWS_PROFILE }}  {{ .Env.SHORT_SHA }}
+### Terraform Changes   {{if .Env.SHORT_SHA}}{{ with sha: .Env.SHORT_SHA }}{{else}}huhu{{end}}
 <details><summary>Expand to view details</summary><p>
 
 ```
