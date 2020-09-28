@@ -76,6 +76,7 @@ GOMPLATE ?= $(DOCKER) run \
 	-e TERRAFORM_STATE_DYNAMODB_TABLE="$(TERRAFORM_STATE_DYNAMODB_TABLE)" \
 	-e SHORT_SHA="$(SHORT_SHA)" \
 	-e GITHUB_EVENT_NAME="$(GITHUB_EVENT_NAME)" \
+	-e GITHUB_ACTOR="$(GITHUB_ACTOR)" \
 	-v $(ENV_DIR):/temp \
 	--rm -i hairyhenderson/gomplate
 
