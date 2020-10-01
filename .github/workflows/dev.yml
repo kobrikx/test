@@ -51,11 +51,11 @@ jobs:
         run: make infra
         shell: bash
 
-      - name: Save TF Output
-        uses: actions/upload-artifact@v1
-        with:
-          name: output
-          path: .infra/env/${{ env.ENV }}/output.json
+#       - name: Save TF Output
+#         uses: actions/upload-artifact@v1
+#         with:
+#           name: output
+#           path: .infra/env/${{ env.ENV }}/output.json
 
   squibby:
     name: squibby
