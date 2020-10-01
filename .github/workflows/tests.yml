@@ -5,7 +5,7 @@ defaults:
 
 env:
   AWS_REGION: us-east-1
-  ENV: dev
+  ENV: testnut
   SHORT_SHA: ${GITHUB_SHA}
   GITHUB_ACTOR: ${GITHUB_ACTOR}     
 on:
