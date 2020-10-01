@@ -5,7 +5,7 @@ defaults:
 
 env:
   AWS_REGION: us-east-1
-  ENV: dev
+  ENV: testnut
 
 on:
   push:
@@ -78,13 +78,13 @@ jobs:
       - name: Create AWS Profile
         run: make aws.profile
 
-      - name: Load TF Output
-        uses: actions/download-artifact@v1
-        with:
-          name: output
+#       - name: Load TF Output
+#         uses: actions/download-artifact@v1
+#         with:
+#           name: output
 
-      - name: Extract TF Output
-        run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+#       - name: Extract TF Output
+#         run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
 
       - name: Login to ECR
         run: make ecr.login
