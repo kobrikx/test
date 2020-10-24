@@ -1,103 +1,103 @@
-name: "[dev] Infra & Apps Deploy"
-defaults:
-  run:
-    shell: bash
+# name: "[dev] Infra & Apps Deploy"
+# defaults:
+#   run:
+#     shell: bash
 
-env:
-  AWS_REGION: us-east-1
-  ENV: testnut
+# env:
+#   AWS_REGION: us-east-1
+#   ENV: testnut
 
-on:
-  push:
-    branches:
-      - develop
-  workflow_dispatch:
-jobs:
+# on:
+#   push:
+#     branches:
+#       - develop
+#   workflow_dispatch:
+# jobs:
 
-  infra:  # Create infrastructure for services on push to Develop branch
-    name: infra
-    runs-on: ubuntu-latest
-    env:
-      # TODO: This needs to be changed for an actual dev key
-      SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCg52RzG0CvE++pPiyrrW34vS+33sQAl8UNQ815u+huMTnBhiialQrG8zpjcb7GP4zHKasxY1dcP4CPyOAb/L+cytocdEogzaZxUvDzawYdJ2H+X4lRMv8uSqz4MmiPQorZy1fXOyqiesmdOvvaFvHtn1NiQrnwnNPTjE879BT2UxG2HiAiJVxSjPKFa/URN7vgyXm22ZYoJmIXTW2KR+bTlDixe29BDd3vG/jKMvjM8EGTxMws8A1xac7xSxCufEmFRV3k8UsNylsjhzTu0sLr5qIKhbFeMMqy26lJerxY3Q95FhtG9ynsxTLJNr3cDCbwqXn96RXPaWvsHwuAjy2d nya@nyau"
-      TAG: "${GITHUB_SHA::10}"
+#   infra:  # Create infrastructure for services on push to Develop branch
+#     name: infra
+#     runs-on: ubuntu-latest
+#     env:
+#       # TODO: This needs to be changed for an actual dev key
+#       SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCg52RzG0CvE++pPiyrrW34vS+33sQAl8UNQ815u+huMTnBhiialQrG8zpjcb7GP4zHKasxY1dcP4CPyOAb/L+cytocdEogzaZxUvDzawYdJ2H+X4lRMv8uSqz4MmiPQorZy1fXOyqiesmdOvvaFvHtn1NiQrnwnNPTjE879BT2UxG2HiAiJVxSjPKFa/URN7vgyXm22ZYoJmIXTW2KR+bTlDixe29BDd3vG/jKMvjM8EGTxMws8A1xac7xSxCufEmFRV3k8UsNylsjhzTu0sLr5qIKhbFeMMqy26lJerxY3Q95FhtG9ynsxTLJNr3cDCbwqXn96RXPaWvsHwuAjy2d nya@nyau"
+#       TAG: "${GITHUB_SHA::10}"
 
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Create AWS Profile
-        run: make aws.profile
-
-      - name: Terraform Plan
-        run: make terraform.plan
-        shell: bash
-
-      - uses: actions/upload-artifact@v1
-        with:
-          name: results
-          path: .infra/env/${{ env.ENV }}/tfplan.md
-
-      - name: Deploy Infra
-        run: make infra
-        shell: bash
-
-#       - name: Save TF Output
-#         uses: actions/upload-artifact@v1
+#     steps:
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
 #         with:
-#           name: output
-#           path: .infra/env/${{ env.ENV }}/output.json
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-  squibby:
-    name: squibby
-    runs-on: ubuntu-latest
-    needs:
-      - infra
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Create AWS Profile
-        run: make aws.profile
-
-#       - name: Load TF Output
-#         uses: actions/download-artifact@v1
+#       - name: Checkout Code
+#         uses: actions/checkout@v2
 #         with:
-#           name: output
+#           submodules: true
 
-#       - name: Extract TF Output
-#         run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+#       - name: Create AWS Profile
+#         run: make aws.profile
 
-      - name: Login to ECR
-        run: make ecr.login
+#       - name: Terraform Plan
+#         run: make terraform.plan
+#         shell: bash
 
-      - name: Build Container
-        run: make ${{ github.job }}.image
+#       - uses: actions/upload-artifact@v1
+#         with:
+#           name: results
+#           path: .infra/env/${{ env.ENV }}/tfplan.md
 
-      - name: Push Image
-        run: make ${{ github.job }}.push
+#       - name: Deploy Infra
+#         run: make infra
+#         shell: bash
 
-      - name: Deploy Container
-        run: make ${{ github.job }}.deploy
+# #       - name: Save TF Output
+# #         uses: actions/upload-artifact@v1
+# #         with:
+# #           name: output
+# #           path: .infra/env/${{ env.ENV }}/output.json
 
-      - name: Logout of Amazon ECR
-        if: always()
-        run: docker logout ${{ steps.login-ecr.outputs.registry }}
+#   squibby:
+#     name: squibby
+#     runs-on: ubuntu-latest
+#     needs:
+#       - infra
+#     steps:
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+#           aws-region: ${{ env.AWS_REGION }}
+
+#       - name: Checkout Code
+#         uses: actions/checkout@v2
+#         with:
+#           submodules: true
+
+#       - name: Create AWS Profile
+#         run: make aws.profile
+
+# #       - name: Load TF Output
+# #         uses: actions/download-artifact@v1
+# #         with:
+# #           name: output
+
+# #       - name: Extract TF Output
+# #         run: mv output/output.json .infra/env/${{ env.ENV }}/output.json
+
+#       - name: Login to ECR
+#         run: make ecr.login
+
+#       - name: Build Container
+#         run: make ${{ github.job }}.image
+
+#       - name: Push Image
+#         run: make ${{ github.job }}.push
+
+#       - name: Deploy Container
+#         run: make ${{ github.job }}.deploy
+
+#       - name: Logout of Amazon ECR
+#         if: always()
+#         run: docker logout ${{ steps.login-ecr.outputs.registry }}
