@@ -16,7 +16,18 @@ on:
       - develop
   workflow_dispatch: 
 jobs:
-                             
+     #  Perform tests on pull request to develop branch
+  set_env:
+    name: Terraform Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set the value
+        run: |
+         echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+         echo "ENV=testnut" >> $GITHUB_ENV
+         echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+         echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
+                               
   # Perform tests on pull request to develop branch
 #   terraform_linter:
 #     name: Terraform Linter
@@ -78,12 +89,12 @@ jobs:
 #       GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
           
-      - name: Set the value
-        run: |
-         echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
-         echo "ENV=testnut" >> $GITHUB_ENV
-         echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-         echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
+#       - name: Set the value
+#         run: |
+#          echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+#          echo "ENV=testnut" >> $GITHUB_ENV
+#          echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+#          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
