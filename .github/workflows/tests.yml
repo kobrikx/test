@@ -105,7 +105,7 @@ jobs:
         run: |
           MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
           CNAM=$(COMMIT_MESSAGE::${MSG})
-          echo "name=$CNAM" >> $GITHUB_ENV
+          echo "name=${CNAM}" >> $GITHUB_ENV
 
       - name: Terraform Plan
         run: make terraform.plan
