@@ -16,54 +16,47 @@ on:
       - develop
   workflow_dispatch: 
 jobs:
-     #  Perform tests on pull request to develop branch
-  set_env:
-    name: Set Environment
+
+                 
+#  Perform tests on pull request to develop branch
+  terraform_linter:
+    name: Terraform Linter
     runs-on: ubuntu-latest
     steps:
       - name: Set the value
         run: |
-         echo "us-east-1" | Out-File -FilePath $env:AWS_REGION -Encoding utf8 -Append
-         echo "testnut" | Out-File -FilePath $env:ENV -Encoding utf8 -Append
-         echo "${GITHUB_SHA}" | Out-File -FilePath $env:SHORT_SHA -Encoding utf8 -Append
-         echo "${GITHUB_ACTOR}" | Out-File -FilePath $env:GITHUB_ACTOR -Encoding utf8 -Append
- #       echo "AWS_REGION=us-east-1" >> $GITHUB_ENV 
-  #       echo "ENV=testnut" >> $GITHUB_ENV
-  #       echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-  #       echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
-                 
-  # Perform tests on pull request to develop branch
-#   terraform_linter:
-#     name: Terraform Linter
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Configure AWS Credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-#           aws-region: ${{ env.AWS_REGION }}
+         echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+         echo "ENV=testnut" >> $GITHUB_ENV
+         echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+         echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
+    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
 
-#       - name: Checkout Code
-#         uses: actions/checkout@v2
-#         with:
-#           submodules: true
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
 
-#       - name: Create AWS Profile
-#         run: make aws.profile
+      - name: Create AWS Profile
+        run: make aws.profile
 
-#       - name: Terraform Init
-#         run: make terraform.init
+      - name: Terraform Init
+        run: make terraform.init
 
-#       - name: Tflint Report Output
-#         uses: reviewdog/action-tflint@master
-#         with:
-#           github_token: ${{ secrets.github_token }}
-#           working_directory: ".infra/env/${{ env.ENV }}"
-#           reporter: github-pr-review
-#           fail_on_error: "true"
-#           filter_mode: "nofilter"
-#           flags: "--module"
+      - name: Tflint Report Output
+        uses: reviewdog/action-tflint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          working_directory: ".infra/env/${{ env.ENV }}"
+          reporter: github-pr-review
+          fail_on_error: "true"
+          filter_mode: "nofilter"
+          flags: "--module"
 
 #   terraform_security:
 #     name: Terraform Security
@@ -93,12 +86,12 @@ jobs:
 #       GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
           
-#       - name: Set the value
-#         run: |
-#          echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
-#          echo "ENV=testnut" >> $GITHUB_ENV
-#          echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-#          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
+      - name: Set the value
+        run: |
+         echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
+         echo "ENV=testnut" >> $GITHUB_ENV
+         echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+         echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
