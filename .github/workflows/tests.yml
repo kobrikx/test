@@ -18,16 +18,20 @@ on:
 jobs:
      #  Perform tests on pull request to develop branch
   set_env:
-    name: Terraform Linter
+    name: Set Environment
     runs-on: ubuntu-latest
     steps:
       - name: Set the value
         run: |
-         echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
-         echo "ENV=testnut" >> $GITHUB_ENV
-         echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-         echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
-                               
+         echo "us-east-1" | Out-File -FilePath $env:AWS_REGION -Encoding utf8 -Append
+         echo "testnut" | Out-File -FilePath $env:ENV -Encoding utf8 -Append
+         echo "${GITHUB_SHA}" | Out-File -FilePath $env:SHORT_SHA -Encoding utf8 -Append
+         echo "${GITHUB_ACTOR}" | Out-File -FilePath $env:GITHUB_ACTOR -Encoding utf8 -Append
+ #       echo "AWS_REGION=us-east-1" >> $GITHUB_ENV 
+  #       echo "ENV=testnut" >> $GITHUB_ENV
+  #       echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+  #       echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
+                 
   # Perform tests on pull request to develop branch
 #   terraform_linter:
 #     name: Terraform Linter
