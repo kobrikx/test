@@ -77,6 +77,12 @@ jobs:
 #       SHORT_SHA: ${GITHUB_SHA}
 #       GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          ref: ${{ github.event.pull_request.head.sha }}
+          
       - name: Set the value
         run: |
          echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
@@ -93,11 +99,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-          ref: ${{ github.event.pull_request.head.sha }}
+#       - name: Checkout Code
+#         uses: actions/checkout@v2
+#         with:
+#           submodules: true
+#           ref: ${{ github.event.pull_request.head.sha }}
           
       - name: Create AWS Profile
         run: make aws.profile
