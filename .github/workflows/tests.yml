@@ -1,78 +1,33 @@
-# name: "[dev] Tests"
-# defaults:
-#   run:
-#     shell: bash
+name: "[dev] Tests"
+defaults:
+  run:
+    shell: bash
 
 # env:
+  
+
 #   AWS_REGION: us-east-1
 #   ENV: testnut
 #   SHORT_SHA: ${GITHUB_SHA}
 #   GITHUB_ACTOR: ${GITHUB_ACTOR}     
-# on:
-#   pull_request:
-#     branches:
-#       - develop
-#   workflow_dispatch: 
-# jobs:
-#   # Perform tests on pull request to develop branch
-# #   terraform_linter:
-# #     name: Terraform Linter
-# #     runs-on: ubuntu-latest
-# #     steps:
-# #       - name: Configure AWS Credentials
-# #         uses: aws-actions/configure-aws-credentials@v1
-# #         with:
-# #           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-# #           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-# #           aws-region: ${{ env.AWS_REGION }}
-
-# #       - name: Checkout Code
-# #         uses: actions/checkout@v2
-# #         with:
-# #           submodules: true
-
-# #       - name: Create AWS Profile
-# #         run: make aws.profile
-
-# #       - name: Terraform Init
-# #         run: make terraform.init
-
-# #       - name: Tflint Report Output
-# #         uses: reviewdog/action-tflint@master
-# #         with:
-# #           github_token: ${{ secrets.github_token }}
-# #           working_directory: ".infra/env/${{ env.ENV }}"
-# #           reporter: github-pr-review
-# #           fail_on_error: "true"
-# #           filter_mode: "nofilter"
-# #           flags: "--module"
-
-# #   terraform_security:
-# #     name: Terraform Security
-# #     runs-on: ubuntu-latest
-# #     steps:
-# #       - name: Checkout Code
-# #         uses: actions/checkout@v2
-# #         with:
-# #           submodules: true
-
-# #       - name: Run Checkov
-# #         run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
-
-# #       - name: Publish Checkov Report
-# #         uses: ashley-taylor/junit-report-annotations-action@master
-# #         with:
-# #           access-token: ${{ secrets.GITHUB_TOKEN }}
-# #           path: "checkov.xml"
-# #           name: "Terraform Security Report"
-# #         if: always()
-# # # 
-#   terraform_plan:
-#     name: Create Terraform Plan
+on:
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch: 
+jobs:
+  Set the value:
+    id: step_one
+    run: |
+        echo "AWS_REGION = us-east-1" >> $GITHUB_ENV
+        echo "ENV = testnut" >> $GITHUB_ENV
+        echo "SHORT_SHA = ${GITHUB_SHA}" >> $GITHUB_ENV
+        echo "GITHUB_ACTOR = ${GITHUB_ACTOR}" >> $GITHUB_ENV
+                             
+  # Perform tests on pull request to develop branch
+#   terraform_linter:
+#     name: Terraform Linter
 #     runs-on: ubuntu-latest
-#     env:
-#       SHORT_SHA: ${GITHUB_SHA}
-#       GITHUB_ACTOR: ${GITHUB_ACTOR} 
 #     steps:
 #       - name: Configure AWS Credentials
 #         uses: aws-actions/configure-aws-credentials@v1
@@ -85,31 +40,86 @@
 #         uses: actions/checkout@v2
 #         with:
 #           submodules: true
-#           ref: ${{ github.event.pull_request.head.sha }}
-          
+
 #       - name: Create AWS Profile
 #         run: make aws.profile
-        
-#       - name: Get Commit Message
-#         run: |
-#           MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-#           echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+
+#       - name: Terraform Init
+#         run: make terraform.init
+
+#       - name: Tflint Report Output
+#         uses: reviewdog/action-tflint@master
+#         with:
+#           github_token: ${{ secrets.github_token }}
+#           working_directory: ".infra/env/${{ env.ENV }}"
+#           reporter: github-pr-review
+#           fail_on_error: "true"
+#           filter_mode: "nofilter"
+#           flags: "--module"
+
+#   terraform_security:
+#     name: Terraform Security
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v2
+#         with:
+#           submodules: true
+
+#       - name: Run Checkov
+#         run: docker run --rm --name checkov -v $PWD:/tf bridgecrew/checkov -d /tf -s -o junitxml > checkov.xml
+
+#       - name: Publish Checkov Report
+#         uses: ashley-taylor/junit-report-annotations-action@master
+#         with:
+#           access-token: ${{ secrets.GITHUB_TOKEN }}
+#           path: "checkov.xml"
+#           name: "Terraform Security Report"
+#         if: always()
+# # 
+  terraform_plan:
+    name: Create Terraform Plan
+    runs-on: ubuntu-latest
+    env:
+      SHORT_SHA: ${GITHUB_SHA}
+      GITHUB_ACTOR: ${GITHUB_ACTOR} 
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          ref: ${{ github.event.pull_request.head.sha }}
           
-#       - name: Terraform Plan
-#         run: make terraform.plan
-#         shell: bash
+      - name: Create AWS Profile
+        run: make aws.profile
+        
+      - name: Get Commit Message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+          echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+          
+      - name: Terraform Plan
+        run: make terraform.plan
+        shell: bash
 
-#       - uses: actions/upload-artifact@v1
-#         with:
-#           name: results
-#           path: .infra/env/${{ env.ENV }}/tfplan.md
+      - uses: actions/upload-artifact@v1
+        with:
+          name: results
+          path: .infra/env/${{ env.ENV }}/tfplan.md
 
-#       - uses: actions/download-artifact@v1
-#         with:
-#           name: results
-#       - name: comment PR
-#         uses: machine-learning-apps/pr-comment@master
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           path: results/tfplan.md
+      - uses: actions/download-artifact@v1
+        with:
+          name: results
+      - name: comment PR
+        uses: machine-learning-apps/pr-comment@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: results/tfplan.md
