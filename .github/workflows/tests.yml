@@ -77,11 +77,6 @@ jobs:
 #       SHORT_SHA: ${GITHUB_SHA}
 #       GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-          ref: ${{ github.event.pull_request.head.sha }}
           
       - name: Set the value
         run: |
@@ -89,8 +84,6 @@ jobs:
          echo "ENV=testnut" >> $GITHUB_ENV
          echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
-         MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-         echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -99,19 +92,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ env.AWS_REGION }}
 
-#       - name: Checkout Code
-#         uses: actions/checkout@v2
-#         with:
-#           submodules: true
-#           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          ref: ${{ github.event.pull_request.head.sha }}
           
       - name: Create AWS Profile
         run: make aws.profile
         
-#       - name: Get Commit Message
-#         run: |
-#           MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-#           echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
+      - name: Get Commit Message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+          echo "name=$(COMMIT_MESSAGE::${MSG})" >> $GITHUB_ENV
 
       - name: Terraform Plan
         run: make terraform.plan
