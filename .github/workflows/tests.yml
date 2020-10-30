@@ -83,7 +83,9 @@ jobs:
          echo "ENV=testnut" >> $GITHUB_ENV
          echo "SHORT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
-         
+         MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+         echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
+          
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -100,10 +102,10 @@ jobs:
       - name: Create AWS Profile
         run: make aws.profile
         
-      - name: Get Commit Message
-        run: |
-          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-          echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
+#       - name: Get Commit Message
+#         run: |
+#           MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+#           echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
 
       - name: Terraform Plan
         run: make terraform.plan
