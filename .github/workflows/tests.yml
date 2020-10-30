@@ -73,9 +73,9 @@ jobs:
   terraform_plan:
     name: Create Terraform Plan
     runs-on: ubuntu-latest
-    env:
-      SHORT_SHA: ${GITHUB_SHA}
-      GITHUB_ACTOR: ${GITHUB_ACTOR} 
+#     env:
+#       SHORT_SHA: ${GITHUB_SHA}
+#       GITHUB_ACTOR: ${GITHUB_ACTOR} 
     steps:
       - name: Set the value
         run: |
@@ -103,8 +103,8 @@ jobs:
       - name: Get Commit Message
         run: |
           MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-          echo "::set-env name=COMMIT_MESSAGE::${MSG}"
-          
+          echo "name=COMMIT_MESSAGE::${MSG}" >> $GITHUB_ENV
+
       - name: Terraform Plan
         run: make terraform.plan
         shell: bash
