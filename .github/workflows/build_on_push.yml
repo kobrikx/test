@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-  dispatch_workflow:
+  workflow_dispatch:
 jobs:
   Build:
     strategy:
