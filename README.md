@@ -1,14 +1,43 @@
-# nutcorp-backend
-Nutcorp Backend Demo
+# Ize Tool (WIP)
 
+This tool is designed to be an opinionated infrastructure wrapper that allows to use multiple tools in one infra: terraform, serverless, waypoint. 
+It combines build and deploy workflows in one.
 
-### ***Usage:***
+This tool is using configuration file that describes the workflows.
 
- 1. Clone from GitHub
- 2. Add Environment Variables(you can use _direnv_ for example)
- 3. Create folder for your application in ```projects``` folder
- 4. Add your application
- 5. Create Terraform file in application folder that describes what resources will be used and name it after your app name
- 6. Replace by your application name - sample name in  ```Makefile``` in root folder of Nutcorp-Backend
- 7. Use ```Makefile``` to deploy or destroy your infrastructure and application.
- 
+## Quickstart
+- GO version should be 1.16+
+- `GOPATH` environment variable is set to `~/go` 
+
+### Ize initialization
+```shell
+go mod download
+make install
+```
+
+(acts as an ideation doc, stuff is not working)
+### Application Lifecycle
+
+```shell
+ize build <goblin>
+ize deploy <goblin>
+```
+
+### Operations Lifecycle
+#### Establish SSM tunnel
+```shell
+ize tunnel up
+ize tunnel down
+```
+
+#### Upload secrets
+```shell
+ize secret set
+ize secret get
+```
+
+#### Deploy Infra
+```shell
+ize deploy infra
+ize destroy infra
+```
