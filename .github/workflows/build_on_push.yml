@@ -51,9 +51,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Build
-      run: go build -o ./ize ./cmd
+      run: go build -o ./ize.exe ./cmd
     - name: Upload bin to artifacts
       uses: actions/upload-artifact@v1
       with:
         name: ize-win
-        path: ize
+        path: ize.exe
