@@ -25,5 +25,5 @@ jobs:
     - name: Upload bin to artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: digest
+        name: ize
         path: ./ize.*
