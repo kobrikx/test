@@ -7,7 +7,7 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  Build on Ubuntu:
+  Ubuntu:
     runs-on: ubuntu-latest
     steps:
     - name: Install Go
@@ -24,7 +24,7 @@ jobs:
         name: ize-ubuntu
         path: ize
 
-  Build on MacOS:
+  MacOS:
     runs-on: macos-latest
     steps:
     - name: Install Go
@@ -41,7 +41,7 @@ jobs:
         name: ize-mac
         path: ize
 
-  Build on windows:
+  Windows:
     runs-on: windows-latest
     steps:
     - name: Install Go
