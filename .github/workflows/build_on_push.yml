@@ -55,5 +55,5 @@ jobs:
     - name: Upload bin to artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: ize-win
+        name: ize.exe
         path: ize.exe
