@@ -25,7 +25,7 @@ jobs:
     - name: Upload bin to artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: ${{ matrix.os }}
+        name: ${{ RUNNER_OS }}
         path: ize
 
 
