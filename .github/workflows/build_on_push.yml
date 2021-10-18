@@ -1,6 +1,5 @@
 name: "Build IZE on push"
-#env:
-#  GOPATH: ./go
+
 on:
   push:
     branches:
