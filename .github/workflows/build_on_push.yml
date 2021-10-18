@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        name: [ize-ubuntu, ize-macos, ize.exe]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Install Go
