@@ -58,6 +58,7 @@ jobs:
 
   generate:
     name: Create release-artifacts
+    needs: Ubuntu, MacOS, Windows
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
