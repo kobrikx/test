@@ -25,7 +25,7 @@ jobs:
     - name: Upload bin to artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: ${{ RUNNER_OS }}
+        name: ${{ runner.os }}
         path: ize
 
 
