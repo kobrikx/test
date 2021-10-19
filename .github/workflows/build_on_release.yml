@@ -71,15 +71,14 @@ jobs:
 #         paths_ignore: '["**/README.md", "**/docs/**"]'
 
   Build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest, macos-latest, windows-latest]
+#    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
     steps:
-    - name: Disallow Concurrent Runs
-      uses: byu-oit/github-action-disallow-concurrent-runs@v2
-      with:
-        token: ${{ github.token }}
+
     - name: Install Go
       uses: actions/setup-go@v2
       with:
