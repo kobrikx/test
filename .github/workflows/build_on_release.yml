@@ -19,23 +19,25 @@ jobs:
          concurrent_skipping: 'never'
          skip_after_successful_duplicate: 'true'
          paths_ignore: '["**/README.md", "**/docs/**"]'
-         
-  Build:
-    needs: pre_job
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.16.x
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Build
-      run: go build -o ./ize ./cmd
+         do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
+
+
+   Build:
+     needs: pre_job
+     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+     strategy:
+       matrix:
+         os: [ubuntu-latest, macos-latest, windows-latest]
+     runs-on: ${{ matrix.os }}
+     steps:
+     - name: Install Go
+       uses: actions/setup-go@v2
+       with:
+         go-version: 1.16.x
+     - name: Checkout code
+       uses: actions/checkout@v2
+     - name: Build
+       run: go build -o ./ize ./cmd
 #
 #    - name: Upload bin to artifacts
 #      uses: actions/upload-artifact@v1
