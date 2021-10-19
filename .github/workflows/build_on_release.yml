@@ -38,40 +38,13 @@ jobs:
        uses: actions/checkout@v2
      - name: Build
        run: go build -o ./ize ./cmd
-#
-#    - name: Upload bin to artifacts
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: ${{ runner.os }}.zip
-#        path: ize
-#
-#
-#
-#    - name: '📥 Download artifact: package'
-#      uses: actions/download-artifact@v2
-#      with:
-#        path: artifact
-#        name: ${{ runner.os }}.zip
-#
-#    - name: Upload
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      run: |
-#        tag_name="${GITHUB_REF##*/}"
-#        hub release edit $(find . -type f -name "*.zip" -printf "-a %p ") -m "" "$tag_name"
-#
-#
-#
-#
-#
-#
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./ize
-        asset_name: ${{ runner.os }}
-        asset_content_type: application/zip
+     - name: Upload Release Asset
+       uses: actions/upload-release-asset@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ github.event.release.upload_url }}
+         asset_path: ./ize
+         asset_name: ${{ runner.os }}
+         asset_content_type: application/zip
