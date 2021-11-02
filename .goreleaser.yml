@@ -16,7 +16,7 @@ brews:
   -
     # Name template of the recipe
     # Default to project name
-    name: Ize
+    name: ize
 
     # IDs of the archives to use.
     # Defaults to all.
@@ -61,19 +61,19 @@ brews:
     # Git author used to commit to the repository.
     # Defaults are shown.
     commit_author:
-      name: goreleaserbot
-      email: goreleaser@carlosbecker.com
+      name: kobrikx
+      email: kobrikx@gmail.com
 
     # The project name and current git tag are used in the format string.
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
 
     # Folder inside the repository to put the formula.
     # Default is the root folder.
-    folder: Formula
+#    folder: Formula
 
     # Caveats for the user of your binary.
     # Default is empty.
-    caveats: "Ize"
+#    caveats: "Ize"
 
     # Your app's homepage.
     # Default is empty.
@@ -93,7 +93,7 @@ brews:
     # If set to auto, the release will not be uploaded to the homebrew tap
     # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
     # Default is false.
-    skip_upload: false
+    skip_upload: auto
 
     # Custom block for brew.
     # Can be used to specify alternate downloads for devel or head releases.
