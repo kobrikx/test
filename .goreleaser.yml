@@ -10,4 +10,4 @@ builds:
       - arm64
     id: "ize"
     dir: .
-    main: ./ize ./cmd
+    main: ./cmd
