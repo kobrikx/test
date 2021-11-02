@@ -52,6 +52,7 @@ name: "Build IZE on release"
 
 on:
   release:
+    types: [created]
   workflow_dispatch:
 
 jobs:
@@ -78,13 +79,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Install Go
       uses: actions/setup-go@v2
       with:
        go-version: 1.16.x
+
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
