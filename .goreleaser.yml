@@ -125,7 +125,7 @@ brews:
     # Custom install script for brew.
     # Default is 'bin.install "program"'.
     install: |
-      bin.install "ize"
+      bin.install "program"
 #      ...
 #
 #    # Custom post_install script for brew.
