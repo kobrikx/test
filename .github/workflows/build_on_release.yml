@@ -85,15 +85,12 @@ jobs:
        go-version: 1.16.x
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Build
-      run: go build -o ./ize ./cmd
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./ize
-        asset_name: ${{ runner.os }}
-        asset_content_type: application/zip
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v2
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
