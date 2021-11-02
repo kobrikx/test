@@ -22,12 +22,12 @@ import (
 )
 var Version = "development"
 
-func main() {
-	resp := commands.Execute(os.Args[1:])
-	if resp.Err != nil {
-		pterm.Error.Print(resp.Err)
-	}
-}
+// func main() {
+// 	resp := commands.Execute(os.Args[1:])
+// 	if resp.Err != nil {
+// 		pterm.Error.Print(resp.Err)
+// 	}
+// }
 func main() {
     fmt.Println("Version:\t", Version)
 }
