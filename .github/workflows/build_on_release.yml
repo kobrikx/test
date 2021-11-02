@@ -1,53 +1,3 @@
-#name: "Build IZE on release"
-#
-#on:
-#  release:
-#  workflow_dispatch:
-#
-#jobs:
-#   pre_job:
-#     # continue-on-error: true # Uncomment once integration is finished
-#   runs-on: ubuntu-latest
-#     # Map a step output to a job output
-#   outputs:
-#     should_skip: ${{ steps.skip_check.outputs.should_skip }}
-#   steps:
-#     - id: skip_check
-#       uses: fkirc/skip-duplicate-actions@master
-#       with:
-#           # All of these options are optional, so you can remove them if you are happy with the defaults
-#         concurrent_skipping: 'never'
-#         skip_after_successful_duplicate: 'true'
-#         paths_ignore: '["**/README.md", "**/docs/**"]'
-#         do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
-#
-#
-#   Build:
-#     needs: pre_job
-#     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-#     strategy:
-#       matrix:
-#         os: [ubuntu-latest, macos-latest, windows-latest]
-#     runs-on: ${{ matrix.os }}
-#     steps:
-#     - name: Install Go
-#       uses: actions/setup-go@v2
-#       with:
-#         go-version: 1.16.x
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-#     - name: Build
-#       run: go build -o ./ize ./cmd
-#
-#     - name: Upload Release Asset
-#       uses: actions/upload-release-asset@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ github.event.release.upload_url }}
-#         asset_path: ./ize
-#         asset_name: ${{ runner.os }}
-#         asset_content_type: application/zip
 name: "Build IZE on release"
 
 on:
@@ -56,26 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-#  pre_job:
-#     # continue-on-error: true # Uncomment once integration is finished
-#   runs-on: ubuntu-latest
-#     # Map a step output to a job output
-#   outputs:
-#     should_skip: ${{ steps.skip_check.outputs.should_skip }}
-#   steps:
-#     - id: skip_check
-#       uses: fkirc/skip-duplicate-actions@master
-#       with:
-#           # All of these options are optional, so you can remove them if you are happy with the defaults
-#         concurrent_skipping: 'never'
-#         skip_after_successful_duplicate: 'false'
-#         paths_ignore: '["**/README.md", "**/docs/**"]'
-
   Build:
-#    strategy:
-#      matrix:
-#        os: [ubuntu-latest, macos-latest, windows-latest]
-#    runs-on: ${{ matrix.os }}
     runs-on: ubuntu-latest
 
     steps:
