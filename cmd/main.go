@@ -27,3 +27,6 @@ func main() {
 		pterm.Error.Print(resp.Err)
 	}
 }
+func main() {
+    fmt.Println("Version:\t", Version)
+}
