@@ -5,17 +5,17 @@
 class Ize < Formula
   desc "IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra"
   homepage "https://ize.sh/"
-  version "0.0.7"
+  version "0.0.8"
   license "MIT"
   depends_on :macos
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/kobrikx/test/releases/download/0.0.7/ize_0.0.7_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "19efdb836ed4fc5126419152b7384fed88a0021bf398ce17c4be3283536a4a19"
+      url "https://github.com/kobrikx/test/releases/download/0.0.8/ize_0.0.8_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "0f7eb9ebcca57fe73c6a8c483ff3db129740249c2752ec46284a6bda7e59abbd"
 
       def install
-        bin.install "bin/ize"
+        bin.install "ize"
       end
     end
   end
