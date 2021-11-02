@@ -5,14 +5,14 @@
 class Ize < Formula
   desc "IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra"
   homepage "https://ize.sh/"
-  version "0.0.3"
+  version "0.0.4"
   license "MIT"
   depends_on :macos
 
   on_macos do
     if Hardware::CPU.intel?
-      url "http://github.com/hazelops/ize/releases/download/0.0.3/ize_0.0.3_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "61a63d160b26ffae3b75dc4cd7fa59b00f0354cb3987ce4ba14825f6178a3989"
+      url "http://github.com/hazelops/ize/releases/download/0.0.4/ize_0.0.4_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "a993ba1e8d7a7ccc7862f34ef685be1ec3dfa67ca461148c6a1b33103261a610"
 
       def install
         bin.install "ize"
@@ -22,6 +22,5 @@ class Ize < Formula
 
   test do
     system "#{bin}/ize"
-    ...
   end
 end
