@@ -34,7 +34,7 @@ import (
     "fmt"
 )
 
-var version
+var version = "development"
 
 func main() {
     fmt.Println("Version:\t", version)
