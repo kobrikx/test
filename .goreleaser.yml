@@ -120,7 +120,7 @@ brews:
     # Default is empty.
     test: |
       system "#{bin}/ize"
-      ...
+
 
     # Custom install script for brew.
     # Default is 'bin.install "program"'.
