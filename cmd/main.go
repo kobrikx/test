@@ -20,6 +20,7 @@ import (
 	"github.com/hazelops/ize/internal/commands"
 	"github.com/pterm/pterm"
 )
+var Version = "development"
 
 func main() {
 	resp := commands.Execute(os.Args[1:])
