@@ -13,29 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-// package main
-//
-// import (
-// 	"os"
-//
-// 	"github.com/hazelops/ize/internal/commands"
-// 	"github.com/pterm/pterm"
-// )
-//
-// func main() {
-// 	resp := commands.Execute(os.Args[1:])
-// 	if resp.Err != nil {
-// 		pterm.Error.Print(resp.Err)
-// 	}
-// }
 package main
 
 import (
-    "fmt"
+	"os"
+
+	"github.com/hazelops/ize/internal/commands"
+	"github.com/pterm/pterm"
 )
 
-var version = "development"
-
 func main() {
-    fmt.Println("Version:\t", version)
+	resp := commands.Execute(os.Args[1:])
+	if resp.Err != nil {
+		pterm.Error.Print(resp.Err)
+	}
 }

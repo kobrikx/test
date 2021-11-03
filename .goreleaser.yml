@@ -9,8 +9,8 @@ builds:
     dir: .
     main: ./cmd
     ldflags:
-      -X "main.version={{.Env.RELEASE_VERSION}}"
-      
+      -X "main.Version={{.Env.RELEASE_VERSION}}"
+
 brews:
   - name: ize
     tap:
