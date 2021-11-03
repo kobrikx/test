@@ -8,9 +8,8 @@ builds:
     id: "ize"
     dir: .
     main: ./cmd
-    version: ./internal/commands/version
     ldflags:
-      -X "version.Version={{.Env.RELEASE_VERSION}}"
+      -X '"./internal/commands/version".Version={{.Env.RELEASE_VERSION}}'
 
 brews:
   - name: ize
