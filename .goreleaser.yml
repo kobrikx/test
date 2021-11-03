@@ -9,7 +9,7 @@ builds:
     dir: .
     main: ./cmd
     ldflags:
-      -X ./internal/commands/version.Version="0.0.6"
+      -X "github.com/hazelops/ize/internal/commands/version".Version={{.Env.RELEASE_VERSION}}
 
 brews:
   - name: ize
