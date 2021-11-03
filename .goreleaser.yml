@@ -8,7 +8,6 @@ builds:
     id: "ize"
     dir: .
     main: ./cmd
-    commands: ./internal
     ldflags:
       - -s -w -X 'github.com/hazelops/ize/internal/commands.Version={{.Env.RELEASE_VERSION}}'
 
