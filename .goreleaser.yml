@@ -9,7 +9,7 @@ builds:
     dir: .
     main: ./cmd
     ldflags:
-      -X "./internal/commands.Version={{.Env.RELEASE_VERSION}}"
+      -X ./internal/commands/version.Version="0.0.6"
 
 brews:
   - name: ize
