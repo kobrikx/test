@@ -34,3 +34,89 @@ brews:
     # Custom install script for brew.
     install: |
       bin.install "ize"
+
+nfpm:
+  # You can change the name of the package.
+  # This is parsed with the Go template engine and the following variables
+  # are available:
+  # - ProjectName
+  # - Tag
+  # - Version (Git tag without `v` prefix)
+  # - Os
+  # - Arch
+  # - Arm (ARM version)
+  # - Env (environment variables)
+  # Default: `{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+  # Your app's vendor.
+  # Default is empty.
+  vendor: Hazelops
+
+  # Your app's homepage.
+  # Default is empty.
+  homepage: https://github.com/hazelops/ize
+
+  # Your app's maintainer (probably you).
+  # Default is empty.
+  maintainer:  ize@hazelops.com>
+
+  # Your app's description.
+  # Default is empty.
+  description: IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra
+
+  # Your app's license.
+  # Default is empty.
+  license: MIT
+
+  # Formats to be generated.
+  formats:
+    - deb
+    - rpm
+
+  # Override default /usr/local/bin destination for binaries
+  bindir: /usr/bin
+
+#archive:
+#  name_template: "{{ .ProjectName }}_{{ .Os }}.{{ .Arch }}"
+#  format: binary
+#  replacements:
+#    darwin: Darwin
+#    linux: Linux
+#    windows: Windows
+#    amd64: amd64
+#checksum:
+#  name_template: 'checksums.txt'
+
+#release:
+#  # Repo in which the release will be created.
+#  # Default is extracted from the origin remote URL.
+#  github:
+#    owner: dahendel
+#    name: docker-machine-driver-cloudstack
+
+#  # If set to true, will not auto-publish the release.
+#  # Default is false.
+#  draft: false
+
+#  # If set to true, will mark the release as not ready for production.
+#  # Default is false.
+#  prerelease: false
+
+  # You can change the name of the GitHub release.
+  # This is parsed with the Go template engine and the following variables
+  # are available:
+  # - ProjectName
+  # - Tag
+  # - Version (Git tag without `v` prefix)
+  # Default is ``
+#  name_template: "{{.ProjectName}}-v{{.Version}}"
+
+#snapshot:
+#  name_template: "{{ .ProjectName }}-next"
+#changelog:
+#  sort: asc
+#  filters:
+#    exclude:
+#      - '^docs:'
+#      - '^test:'
