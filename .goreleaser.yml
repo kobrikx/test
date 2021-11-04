@@ -58,3 +58,12 @@ nfpms:
     maintainer: Ize development team <ize@hazelops.com>
     description: IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra
     license: MIT
+
+publishers:
+  - name: fury.io
+    # by specifying `packages` id here goreleaser will only use this publisher
+    # with artifacts identified by this id
+    ids:
+      - ize
+    dir: "{{ dir .ArtifactPath }}"
+    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/crabroyalinc/
