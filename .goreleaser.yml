@@ -52,7 +52,6 @@ nfpms:
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     formats:
       - deb
-      - rpm
     vendor: HazelOps
     homepage: https://ize.sh
     maintainer: Ize development team <ize@hazelops.com>
