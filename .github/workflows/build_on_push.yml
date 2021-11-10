@@ -39,10 +39,10 @@ jobs:
 
 
     - name: Upload bin to artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ize
-          path: dist/*
+      uses: actions/upload-artifact@v2
+      with:
+        name: ize
+        path: dist/*
 
 
 
