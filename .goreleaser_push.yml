@@ -12,8 +12,6 @@ builds:
     ldflags:
       - -s -w
 
-release:
-  disable: true
 
 brews:
   - name: ize_dev
