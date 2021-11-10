@@ -3,7 +3,7 @@ name: "Build IZE on release"
 on:
   release:
     types: [created]
-    tags: ['v[0-9].[0-9]+.[0-9]+']
+    tags: '!nightly'
 
 jobs:
   Build:

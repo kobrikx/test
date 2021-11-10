@@ -23,7 +23,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create a GitHub release
-      needs: Delete release
       uses: ncipollo/release-action@v1
       with:
         tag: "nightly"
