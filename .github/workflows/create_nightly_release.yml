@@ -20,10 +20,10 @@ jobs:
         tag_name: nightly # tag name to delete
         repo: kobrikx/test # target repo (optional). defaults to repo running this action
       env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create a GitHub release
-      needs: build
+      needs: Delete release
       uses: ncipollo/release-action@v1
       with:
         tag: "nightly"
