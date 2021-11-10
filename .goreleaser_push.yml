@@ -1,4 +1,4 @@
-project_name: ize_dev
+project_name: ize@nightly
 builds:
   - env: [CGO_ENABLED=0]
     goos:
@@ -6,48 +6,42 @@ builds:
       - linux
     goarch:
       - amd64
-    id: "ize_dev"
+    id: "ize@nightly"
     dir: .
     main: ./cmd
     ldflags:
-      - -s -w -X 'github.com/hazelops/ize/internal/commands.Version={{.CommitDate}}'
-    tags:
-      - develop
+      - -s -w -X 'github.com/hazelops/ize/internal/commands.Version={{.Env.RELEASE_VERSION}}'
 
-
-#brews:
-#  - name: ize_dev
-#    tap:
-#      owner: kobrikx
-#      name: homebrew-testize
-#      branch: main
-#      # Optionally a token can be provided, if it differs from the token provided to GoReleaser
-#      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-#
-#    url_template: "https://github.com/kobrikx/test/suites/releases/{{ .Tag }}/{{ .ArtifactName }}"
-##https://github.com/kobrikx/test/suites/4310903564/artifacts/112631010
-#    download_strategy: CurlDownloadStrategy
-#    commit_author:
-#      name: kobrikx
-#      email: kobrikx@gmail.com
-#    # The project name and current git tag are used in the format string.
-#    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-#    homepage: "https://ize.sh/"
-#    description: "IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra"
-#    license: "MIT"
-#    skip_upload: auto
-#    test: |
-#      system "#{bin}/ize_dev"
-#    # Custom install script for brew.
-#    install: |
-#      bin.install "ize_dev"
+brews:
+  - name: ize@nightly
+    tap:
+      owner: kobrikx
+      name: homebrew-testize
+      branch: main
+      # Optionally a token can be provided, if it differs from the token provided to GoReleaser
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    download_strategy: CurlDownloadStrategy
+    commit_author:
+      name: kobrikx
+      email: kobrikx@gmail.com
+    # The project name and current git tag are used in the format string.
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    homepage: "https://ize.sh/"
+    description: "IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra"
+    license: "MIT"
+    skip_upload: auto
+    test: |
+      system "#{bin}/ize"
+    # Custom install script for brew.
+    install: |
+      bin.install "ize"
 
 nfpms:
   # note that this is an array of nfpm configs
   -
     # ID of the nfpm config, must be unique.
     # Defaults to "default".
-    id: ize_dev
+    id: ize@nightly
 
     # Name of the package.
     # Defaults to `ProjectName`.
@@ -63,13 +57,13 @@ nfpms:
     homepage: https://ize.sh
     maintainer: Ize development team <ize@hazelops.com>
     description: IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra
-    license: Apache 2.0
+    license: MIT
 
 publishers:
   - name: fury.io
     # by specifying `packages` id here goreleaser will only use this publisher
     # with artifacts identified by this id
     ids:
-      - ize_dev
+      - ize@nightly
     dir: "{{ dir .ArtifactPath }}"
     cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/crabroyalinc/

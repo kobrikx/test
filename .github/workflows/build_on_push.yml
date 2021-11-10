@@ -1,8 +1,10 @@
 name: "Build IZE on push"
 
 on:
-  push:
-  workflow_dispatch:
+  release:
+    types: [created]
+    tags:
+      - 'nightly'
 
 jobs:
   Build:
@@ -21,7 +23,7 @@ jobs:
 
     - name: Set env
       run: |
-        echo "PUSH_VERSION=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
@@ -34,66 +36,3 @@ jobs:
         HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
         RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
-
-
-
-
-    - name: Upload bin to artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ize-dev
-        path: dist/*.tar.gz
-
-
-
-
-#  Ubuntu:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - name: Install Go
-#      uses: actions/setup-go@v2
-#      with:
-#        go-version: 1.16.x
-#    - name: Checkout code
-#      uses: actions/checkout@v2
-#    - name: Build
-#      run: go build -o ./ize ./cmd
-#    - name: Upload bin to artifacts
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: ize-ubuntu
-#        path: ize
-#
-#  MacOS:
-#    runs-on: macos-latest
-#    steps:
-#    - name: Install Go
-#      uses: actions/setup-go@v2
-#      with:
-#        go-version: 1.16.x
-#    - name: Checkout code
-#      uses: actions/checkout@v2
-#    - name: Build
-#      run: go build -o ./ize ./cmd
-#    - name: Upload bin to artifacts
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: ize-mac
-#        path: ize
-#
-#  Windows:
-#    runs-on: windows-latest
-#    steps:
-#    - name: Install Go
-#      uses: actions/setup-go@v2
-#      with:
-#        go-version: 1.16.x
-#    - name: Checkout code
-#      uses: actions/checkout@v2
-#    - name: Build
-#      run: go build -o ./ize.exe ./cmd
-#    - name: Upload bin to artifacts
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: ize.exe
-#        path: ize.exe
