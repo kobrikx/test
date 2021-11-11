@@ -29,9 +29,8 @@ jobs:
         tag_name: 0.0.0-dev
         release_name: Dev Release
         body: |
-          Dev release
-#        draft: false
-#        prerelease: false
+          Most recent dev release
+        prerelease: true
 
 #    - name: Create a GitHub release
 #      uses: ncipollo/release-action@v1
