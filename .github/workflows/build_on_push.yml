@@ -1,11 +1,11 @@
 name: "Build IZE on push"
 
 on:
-  release:
-    types: [published, created]
+#  release:
+#    types: [published, created]
   push:
     tags:
-      - 0.0.0-nightly
+      - '0.0.0-nightly'
 
 jobs:
   Build:
