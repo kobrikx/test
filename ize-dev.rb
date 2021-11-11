@@ -10,8 +10,8 @@ class IzeDev < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/kobrikx/test/releases/download/0.0.0-dev/ize-dev_0.0.0-dev_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "64ace35b41db014ab22d30acdfe993e245a6f022292dde8ef61602c5976fa70e"
+      url "https://github.com/kobrikx/test/releases/download/0.0.0-dev/ize_0.0.0-dev_darwin_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "eb6f8387d3bd05ed7e965f0527f5c3f3b098a1a064a6743b195ae13ab106a34d"
 
       def install
         bin.install "ize"
@@ -21,8 +21,8 @@ class IzeDev < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/kobrikx/test/releases/download/0.0.0-dev/ize-dev_0.0.0-dev_linux_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "6f82207c304c8bc199f565572c32704614ceb5cec3fcb3ef70da4e7c6275f899"
+      url "https://github.com/kobrikx/test/releases/download/0.0.0-dev/ize_0.0.0-dev_linux_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "a2853e9502318e0f06bac338d8f720743543ca3c0369773956980a6698a8e986"
 
       def install
         bin.install "ize"
