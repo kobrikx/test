@@ -2,7 +2,7 @@ name: "Build IZE on push"
 
 on:
   release:
-    types: [created]
+#    types: [created]
 
 jobs:
 
