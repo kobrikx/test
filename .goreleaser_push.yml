@@ -1,4 +1,4 @@
-project_name: ize-dev
+project_name: ize
 builds:
   - env: [CGO_ENABLED=0]
     goos:
@@ -6,7 +6,7 @@ builds:
       - linux
     goarch:
       - amd64
-    id: "ize-dev"
+    id: "ize"
     dir: .
     main: ./cmd
     ldflags:
