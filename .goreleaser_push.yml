@@ -13,7 +13,7 @@ builds:
       - -s -w -X 'github.com/hazelops/ize/internal/commands.Version={{.Env.RELEASE_VERSION}}'
 
 brews:
-  - name: ize@dev
+  - name: ize-dev
     tap:
       owner: kobrikx
       name: homebrew-testize
@@ -41,7 +41,7 @@ nfpms:
   -
     # ID of the nfpm config, must be unique.
     # Defaults to "default".
-    id: ize@dev
+    id: ize-dev
 
     # Name of the package.
     # Defaults to `ProjectName`.
@@ -64,6 +64,6 @@ publishers:
     # by specifying `packages` id here goreleaser will only use this publisher
     # with artifacts identified by this id
     ids:
-      - ize@dev
+      - ize-dev
     dir: "{{ dir .ArtifactPath }}"
     cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/crabroyalinc/
