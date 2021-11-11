@@ -7,7 +7,7 @@ on:
 jobs:
 
   Build:
-    if: startsWith(github.ref, 'refs/tags/0.0.0-dev')
+    if: startsWith(github.ref, 'refs/tags/dev')
     runs-on: ubuntu-latest
 
     steps:
