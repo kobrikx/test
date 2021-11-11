@@ -33,5 +33,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
-        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        RELEASE_VERSION: ${{ github.sha }}
         FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
