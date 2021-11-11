@@ -1,4 +1,4 @@
-project_name: ize@nightly
+project_name: ize-dev
 builds:
   - env: [CGO_ENABLED=0]
     goos:
@@ -6,14 +6,14 @@ builds:
       - linux
     goarch:
       - amd64
-    id: "ize@nightly"
+    id: "ize-dev"
     dir: .
     main: ./cmd
     ldflags:
       - -s -w -X 'github.com/hazelops/ize/internal/commands.Version={{.Env.RELEASE_VERSION}}'
 
 brews:
-  - name: ize@nightly
+  - name: ize-dev
     tap:
       owner: kobrikx
       name: homebrew-testize
@@ -41,7 +41,7 @@ nfpms:
   -
     # ID of the nfpm config, must be unique.
     # Defaults to "default".
-    id: ize@nightly
+    id: ize-dev
 
     # Name of the package.
     # Defaults to `ProjectName`.
@@ -64,6 +64,6 @@ publishers:
     # by specifying `packages` id here goreleaser will only use this publisher
     # with artifacts identified by this id
     ids:
-      - ize@nightly
+      - ize-dev
     dir: "{{ dir .ArtifactPath }}"
     cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/crabroyalinc/
