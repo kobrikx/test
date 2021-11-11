@@ -27,8 +27,8 @@ jobs:
 
     - name: yank old versions of dev
       run: |
-        fury yank ize-dev --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-        fury yank ize-dev --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury yank ize-dev --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }} && return 0
+        fury yank ize-dev --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }} && return 0
         return 0
     - name: Create Release
       id: create_release
