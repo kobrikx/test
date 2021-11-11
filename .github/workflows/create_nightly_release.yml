@@ -31,12 +31,3 @@ jobs:
         body: |
           Most recent dev release
         prerelease: true
-
-#    - name: Create a GitHub release
-#      uses: ncipollo/release-action@v1
-#      with:
-#        tag: "0.0.0-dev"
-#        name: Dev release
-#        body: |
-#          Dev release
-#        draft: false
