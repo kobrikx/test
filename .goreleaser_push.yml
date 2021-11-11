@@ -29,7 +29,7 @@ brews:
     homepage: "https://ize.sh/"
     description: "IZE is an opinionated infrastructure wrapper that allows to use multiple tools in one infra"
     license: "MIT"
-    skip_upload: auto
+    skip_upload: false
     test: |
       system "#{bin}/ize"
     # Custom install script for brew.
