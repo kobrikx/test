@@ -5,8 +5,9 @@ on:
     types: [created]
 
 jobs:
-  if: startsWith(github.ref, 'refs/tags/0.0.0-dev')
+
   Build:
+    if: startsWith(github.ref, 'refs/tags/0.0.0-dev')
     runs-on: ubuntu-latest
 
     steps:
