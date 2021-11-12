@@ -20,16 +20,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: install gemfury
-      run: |
-        sudo apt-get -y install ruby
-        sudo gem install gemfury
-
-    - name: yank old versions of dev
-      run: |
-        fury yank ize-dev --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-        fury yank ize-dev --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-        continue-on-error: true
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -41,3 +31,14 @@ jobs:
         body: |
           Most recent dev release
 #        prerelease: true
+
+    - name: install gemfury
+      run: |
+        sudo apt-get -y install ruby
+        sudo gem install gemfury
+
+    - name: yank old versions of dev
+      run: |
+        fury yank ize-dev --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury yank ize-dev --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        continue-on-error: true
