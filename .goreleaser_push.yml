@@ -6,6 +6,7 @@ builds:
       - linux
     goarch:
       - amd64
+      - arm64
     id: "ize"
     dir: .
     main: ./cmd
@@ -22,8 +23,8 @@ brews:
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     download_strategy: CurlDownloadStrategy
     commit_author:
-      name: kobrikx
-      email: kobrikx@gmail.com
+      name: ize
+      email: ize@hazelops.com
     # The project name and current git tag are used in the format string.
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
     homepage: "https://ize.sh/"
