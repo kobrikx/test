@@ -46,4 +46,3 @@ jobs:
         release_name: Dev Release
         body: |
           Most recent dev release
-#        prerelease: true
