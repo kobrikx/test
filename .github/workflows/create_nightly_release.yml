@@ -37,9 +37,14 @@ jobs:
         sudo apt-get -y install ruby
         sudo gem install gemfury
 
-    - name: yank old versions of dev
+    - name: list gemfury
       run: |
         fury list --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        sudo gem install gemfury
+
+
+    - name: yank old versions of dev
+      run: |
         fury yank ize-dev --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
         fury yank ize-dev --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-        continue-on-error: true
+      continue-on-error: true
