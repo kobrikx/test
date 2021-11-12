@@ -32,7 +32,6 @@ jobs:
 
     - name: yank old versions of dev
       run: |
-        fury yank ize --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
         fury yank ize --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
       continue-on-error: true
 
