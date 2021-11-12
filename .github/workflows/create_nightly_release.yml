@@ -26,13 +26,11 @@ jobs:
         sudo gem install gemfury
 
     - name: list dev
-      run: |
-        fury versions ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-        fury versions ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      run: fury versions ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      continue-on-error: true
 
     - name: yank old versions of dev
-      run: |
-        fury yank ize --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      run: fury yank ize --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
       continue-on-error: true
 
     - name: Create Release
