@@ -28,8 +28,9 @@ jobs:
         sudo gem install gemfury
 
     - name: list dev
-      run: fury versions deb:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
-      run: fury versions rpm:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      run: |
+        fury versions deb:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury versions rpm:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
       continue-on-error: true
 
     - name: yank old versions of dev
