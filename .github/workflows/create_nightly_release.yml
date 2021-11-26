@@ -6,7 +6,23 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  skip-infra:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.skip-workflow.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: skip-workflow
+        id: skip-workflow # id used for referencing step
+        uses: saulmaldonado/skip-workflow@v1
+        with:
+          phrase: '#ci_skip_job:infra'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   create_on_push:
+    needs: skip-infra
+    if: ${{ needs.init.outputs.skip == 'false' }}
     runs-on: ubuntu-latest
 
     steps:
