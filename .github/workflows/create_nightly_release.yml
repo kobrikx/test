@@ -19,11 +19,12 @@ jobs:
         with:
           phrase: '#ci_skip_job:infra'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: view results
+        run: echo ${{ steps.skip-workflow.outputs.skip }}
 
   create_on_push:
     needs: skip-infra
-    if: ${{ needs.init.outputs.skip == 'false' }}
+    if: ${{ needs.init.outputs.skip == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
