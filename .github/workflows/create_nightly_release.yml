@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  skip-infra: 
+  skip-infra:
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.skip-workflow.outputs.skip }}
@@ -24,7 +24,7 @@ jobs:
 
   create_on_push:
     needs: skip-infra
-    if: ${{ !needs.skip-workflow.outputs.skip }}
+    if: ${{ !needs.skip-infra.outputs.skip }}
     runs-on: ubuntu-latest
 
     steps:
