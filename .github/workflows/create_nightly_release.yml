@@ -24,7 +24,7 @@ jobs:
 
   create_on_push:
     needs: skip-infra
-    if: ${{ needs.init.outputs.skip == 'true' }}
+    if: ${{ !needs.skip-workflow.outputs.skip }}
     runs-on: ubuntu-latest
 
     steps:
