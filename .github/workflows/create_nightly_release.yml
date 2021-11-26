@@ -20,6 +20,7 @@ jobs:
           phrase: '#ci_skip_job:infra'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+
   create_on_push:
     needs: skip-infra
     if: ${{ needs.init.outputs.skip == 'false' }}
