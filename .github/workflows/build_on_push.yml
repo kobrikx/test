@@ -1,4 +1,4 @@
-name: "Build IZE on push"#
+name: "Build IZE on push"
 on:
   release:
     types: [created]
