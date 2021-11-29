@@ -9,7 +9,7 @@ jobs:
 
 ###
   create_on_push:
-    if: "! contains(toJSON(github.event.commits.*.message), '#ci_skip_job:infra')"
+    if: "!contains(github.event.head_commit.message, '#ci_skip_job:infra')"
     runs-on: ubuntu-latest
 
     steps:
