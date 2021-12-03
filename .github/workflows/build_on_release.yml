@@ -39,6 +39,7 @@ jobs:
 
     - name: create docs
       run: |
+        mkdir docs
         go run ./cmd gendoc
 
     - name: Pushes test file
