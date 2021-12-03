@@ -2,68 +2,50 @@ package config
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 
-	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/spf13/viper"
 )
 
 const Filename = "ize.hcl"
 
 type Config struct {
 	hclConfig
-	pathData map[string]string
 }
 
 type hclConfig struct {
-	AwsConfig        string `hcl:"aws_config,optional"`
-	TerraformVersion string `hcl:"terraform_version"`
-	Env              string `hcl:"env"`
-	AwsRegion        string `hcl:"aws_region"`
-	AwsProfile       string `hcl:"aws_profile"`
-	Namespace        string `hcl:"namespace"`
-
-	Service []*struct {
-		Type string   `hcl:"type,label"`
-		Name string   `hcl:"name,label"`
-		Body hcl.Body `hcl:",remain"`
-	} `hcl:"service,block"`
-}
-
-type Service struct {
-	Use    *Use     `hcl:"use,block"`
-	Body   hcl.Body `hcl:",body"`
-	Remain hcl.Body `hcl:",remain"`
-}
-
-type Use struct {
-	Type string   `hcl:",label"`
-	Body hcl.Body `hcl:",remain"`
+	TerraformVersion string                            `mapstructure:"terraform_version"`
+	Env              string                            `mapstructure:"env"`
+	AwsRegion        string                            `mapstructure:"aws_region"`
+	AwsProfile       string                            `mapstructure:"aws_profile"`
+	Namespace        string                            `mapstructure:"namespace"`
+	Infra            map[string]map[string]interface{} `mapstructure:"infra"`
 }
 
 func FindPath(filename string) (string, error) {
-	var err error
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", err
+	if !path.IsAbs(filename) {
+		wd, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+
+		if filename == "" {
+			filename = Filename
+		}
+
+		filename = filepath.Join(wd, filename)
 	}
 
-	if filename == "" {
-		filename = Filename
-	}
-
-	path := filepath.Join(wd, filename)
-	if _, err := os.Stat(path); err == nil {
-		return path, nil
+	if _, err := os.Stat(filename); err == nil {
+		return filename, nil
 	} else {
 		return "", err
 	}
 }
 
 func Load(path string) (*Config, error) {
-	var ctx *hcl.EvalContext
 
-	// We require an absolute path for the path so we can set the path vars
 	if !filepath.IsAbs(path) {
 		var err error
 		path, err = filepath.Abs(path)
@@ -72,17 +54,18 @@ func Load(path string) (*Config, error) {
 		}
 	}
 
-	// Decode
+	viper.SetConfigFile(path)
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	//Decode
 	var cfg hclConfig
-	if err := hclsimple.DecodeFile(path, ctx, &cfg); err != nil {
+	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
 
 	return &Config{
 		hclConfig: cfg,
 	}, nil
-}
-
-type Ecs struct {
-	TerraformStateBucketName string `hcl:"terraform_state_bucket_name"`
 }

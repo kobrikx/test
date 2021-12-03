@@ -22,7 +22,7 @@ func (b *commandsBuilder) newEnvCmd() *envCmd {
 
 	cmd := &cobra.Command{
 		Use:              "env",
-		Short:            "",
+		Short:            "Manage environment.",
 		Long:             "",
 		RunE:             nil,
 		TraverseChildren: true,
@@ -30,8 +30,8 @@ func (b *commandsBuilder) newEnvCmd() *envCmd {
 
 	envCmd := &cobra.Command{
 		Use:   "terraform",
-		Short: "Generate terraform files",
-		Long:  "This command generate terraform files",
+		Short: "Generate terraform files.",
+		Long:  "This command generate terraform files.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := cc.Init()
 			if err != nil {
@@ -61,7 +61,8 @@ func (b *commandsBuilder) newEnvCmd() *envCmd {
 			pterm.Success.Println("backend.tf generated")
 
 			sess, err := utils.GetSession(&utils.SessionConfig{
-				Region: cc.config.AwsRegion,
+				Region:  cc.config.AwsRegion,
+				Profile: cc.config.AwsProfile,
 			})
 			if err != nil {
 				pterm.DefaultSection.Println("Generate terrafrom file not completed")

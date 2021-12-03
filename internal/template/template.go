@@ -3,16 +3,20 @@ package template
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
+	"github.com/pterm/pterm"
 	"github.com/zclconf/go-cty/cty"
 )
 
 const (
 	backend = "backend.tf"
 	vars    = "terraform.tfvars"
+	ize     = "ize.hcl"
 )
 
 func GenerateVarsTf(opts VarsOpts, path string) error {
@@ -40,6 +44,79 @@ func GenerateVarsTf(opts VarsOpts, path string) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func GenerateConfigFile(opts ConfigOpts, path string) error {
+	if !filepath.IsAbs(path) {
+		if path == "" {
+			path += ize
+		}
+
+		wd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		path = filepath.Join(wd, path)
+	}
+
+	f := hclwrite.NewEmptyFile()
+
+	rootBody := f.Body()
+
+	rootBody.SetAttributeValue("env", cty.StringVal(opts.ENV))
+	rootBody.SetAttributeValue("aws_profile", cty.StringVal(opts.AWS_PROFILE))
+	rootBody.SetAttributeValue("aws_region", cty.StringVal(opts.AWS_REGION))
+	rootBody.SetAttributeValue("terraform_version", cty.StringVal(opts.TERRAFORM_VERSION))
+	rootBody.SetAttributeValue("namespace", cty.StringVal(opts.NAMESPACE))
+
+	var owr bool = false
+
+	_, err := os.Stat(path)
+	if err == nil {
+		var qs = []*survey.Question{
+			{
+				Prompt: &survey.Confirm{
+					Message: " The file already exists. Overwrite?",
+				},
+				Validate: survey.Required,
+				Name:     "owr",
+			},
+		}
+
+		err = survey.Ask(qs, &owr, survey.WithIcons(func(is *survey.IconSet) {
+			is.Question.Text = " ??"
+			is.Question.Format = "black:green"
+			is.Error.Format = "black:red"
+		}))
+		if err != nil {
+			return err
+		}
+
+		if !owr {
+			return nil
+		}
+	}
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	_, err = f.WriteTo(file)
+	if err != nil {
+		return err
+	}
+
+	if owr {
+		pterm.Success.Println("Config file overwritten successfully")
+	}
+
+	pterm.Success.Println("Config file created successfully")
 
 	return nil
 }
@@ -151,4 +228,12 @@ type BackendOpts struct {
 	TERRAFORM_STATE_PROFILE        string
 	TERRAFORM_STATE_DYNAMODB_TABLE string
 	TERRAFORM_AWS_PROVIDER_VERSION string
+}
+
+type ConfigOpts struct {
+	ENV               string
+	AWS_PROFILE       string
+	AWS_REGION        string
+	TERRAFORM_VERSION string
+	NAMESPACE         string
 }

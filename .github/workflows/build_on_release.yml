@@ -36,3 +36,23 @@ jobs:
         HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
         RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
+
+    - name: create docs
+      run: |
+        go run ./cmd gendoc
+
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+      with:
+        source_file: '/tmp/*.md'
+        destination_repo: 'kobrikx/homebrew-testize'
+        destination_folder: 'docs'
+        user_email: 'kobrikx@gmail.com'
+        user_name: 'kobrikx'
+        commit_message: 'Add docs from Ize'
+
+#  Create_docs:
+#    runs-on: ubuntu-latest
+#

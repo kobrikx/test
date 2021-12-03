@@ -12,7 +12,6 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"go.uber.org/zap/zapcore"
 )
 
 type baseCmd struct {
@@ -57,6 +56,11 @@ func (b *commandsBuilder) addAll() *commandsBuilder {
 		b.newConfigCmd(),
 		b.newEnvCmd(),
 		b.newTunnelCmd(),
+		b.newMfaCmd(),
+		b.newSSHCmd(),
+		b.newInitCmd(),
+		b.newDeployCmd(),
+		b.newGendocCmd(),
 	)
 
 	return b
@@ -67,39 +71,45 @@ func (b *commandsBuilder) newBuilderBasicCdm(cmd *cobra.Command) *baseBuilderCmd
 	return bcmd
 }
 
+var (
+	rootCmd = &cobra.Command{
+		Use: "ize",
+		Long: fmt.Sprintf("%s\n%s\n%s",
+			pterm.White(pterm.Bold.Sprint("Welcome to IZE")),
+			pterm.Sprintf("%s %s", pterm.Blue("Docs:"), "https://ize.sh"),
+			pterm.Sprintf("%s %s", pterm.Green("Version:"), Version),
+		),
+		TraverseChildren: true,
+	}
+)
+
+func init() {
+	rootCmd.PersistentFlags().StringP("log-level", "l", "", "enable debug messages")
+	rootCmd.PersistentFlags().StringP("config-file", "c", "", "set config file name")
+
+	rootCmd.Flags().StringP("env", "e", "", "set environment name")
+	rootCmd.Flags().StringP("aws-profile", "p", "", "set AWS profile")
+	rootCmd.Flags().StringP("aws-region", "r", "", "set AWS region")
+
+	rootCmd.Flags().StringP("namespace", "n", "", "set namespace")
+
+	//Bind viper key to a flag (required for flags/parameters that are more than 1 word)
+	viper.BindPFlag("log_level", rootCmd.PersistentFlags().Lookup("log-level"))
+	viper.BindPFlag("config_file", rootCmd.PersistentFlags().Lookup("config-file"))
+	viper.BindPFlag("aws_profile", rootCmd.Flags().Lookup("aws-profile"))
+	viper.BindPFlag("aws_region", rootCmd.Flags().Lookup("aws-region"))
+
+	viper.BindPFlags(rootCmd.Flags())
+	viper.BindPFlags(rootCmd.PersistentFlags())
+}
+
 func (b *commandsBuilder) newIzeCmd() *izeCmd {
 	cc := &izeCmd{}
 
-	cc.baseBuilderCmd = b.newBuilderCmd(&cobra.Command{
-		Use:     "ize",
-		Version: GetVersionNumber(),
-		Short:   "A brief description of your application",
-		Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	cc.baseBuilderCmd = b.newBuilderCmd(rootCmd)
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	})
-
-	cc.cmd.SilenceErrors = true
+	cc.baseCmd.cmd.SilenceErrors = true
 	cc.cmd.SilenceUsage = true
-	cc.cmd.PersistentFlags().StringVarP(&cc.ll, "log-level", "l", "infa", "enable debug message")
-	cc.cmd.PersistentFlags().StringVarP(&cc.cfgFile, "config-file", "c", "", "set config file name")
-
-	var logLevel zapcore.Level
-
-	// TODO: Fix
-	switch cc.ll {
-	case "info":
-		logLevel = zapcore.InfoLevel
-	case "debug":
-		logLevel = zapcore.DebugLevel
-	default:
-		logLevel = zapcore.WarnLevel
-	}
-
-	cc.log = logger.NewSugaredLogger(logLevel)
 
 	return cc
 }
@@ -125,15 +135,15 @@ func (b *commandsBuilder) build() *izeCmd {
 }
 
 type izeBuilderCommon struct {
-	cfgFile string
-	ll      string
-
 	config *config.Config
 	log    logger.StandartLogger
 }
 
 func (cc *izeBuilderCommon) Init() error {
-	config, err := cc.initConfig(cc.cfgFile)
+	viper.SetEnvPrefix("IZE")
+	viper.AutomaticEnv()
+
+	config, err := cc.initConfig(viper.GetString("config_file"))
 	if err != nil {
 		return err
 	}
@@ -144,20 +154,6 @@ func (cc *izeBuilderCommon) Init() error {
 	if err != nil {
 		fmt.Println("Error getting current directory")
 	}
-
-	// for _, s := range config.Service {
-	// 	switch serviceType := s.Type; serviceType {
-	// 	case "ecs":
-	// 		ecsCfg := Ecs{}
-	// 		if s.Body != nil {
-	// 			if diag := gohcl.DecodeBody(s.Body, &hcl.EvalContext{}, &ecsCfg); diag.HasErrors() {
-	// 				return fmt.Errorf("error: %w", diag)
-	// 			}
-	// 		}
-	// 		app = ecsCfg
-	// 	}
-
-	// }
 
 	// Find home directory.
 	home, err := os.UserHomeDir()
@@ -176,8 +172,16 @@ func (cc *izeBuilderCommon) Init() error {
 	viper.SetDefault("TF_LOG", fmt.Sprintf(""))
 	viper.SetDefault("TF_LOG_PATH", fmt.Sprintf("%v/tflog.txt", viper.Get("ENV_DIR")))
 
+	if err = CheckRequirements(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CheckRequirements() error {
 	//Check Docker and SSM Agent
-	_, err = CheckCommand("docker", []string{"info"})
+	_, err := CheckCommand("docker", []string{"info"})
 	if err != nil {
 		return errors.New("docker is not running or is not installed (visit https://www.docker.com/get-started)")
 	}
@@ -255,8 +259,4 @@ func (cc *izeBuilderCommon) Init() error {
 	}
 
 	return nil
-}
-
-type Ecs struct {
-	TerraformStateBucketName string `hcl:"terraform_state_bucket_name"`
 }
