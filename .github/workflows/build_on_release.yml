@@ -39,7 +39,7 @@ jobs:
 
     - name: create docs
       run: |
-        mkdir docs
+        mkdir commands
         go run ./cmd gendoc
 
     - name: Pushes test file
@@ -49,7 +49,7 @@ jobs:
       with:
         source_file: 'docs'
         destination_repo: 'kobrikx/homebrew-testize'
-#        destination_folder: 'docs'
+        destination_folder: 'content'
         user_email: 'kobrikx@gmail.com'
         user_name: 'kobrikx'
         commit_message: 'Add docs from Ize'
