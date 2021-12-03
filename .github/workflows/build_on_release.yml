@@ -23,19 +23,19 @@ jobs:
     - name: Set env
       run: |
         echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Run GoReleaser
-
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        # either 'goreleaser' (default) or 'goreleaser-pro'
-        distribution: goreleaser
-        version: latest
-        args: release -f .goreleaser.yml --rm-dist --debug
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
-        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-        FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
+#    - name: Run GoReleaser
+#
+#      uses: goreleaser/goreleaser-action@v2
+#      with:
+#        # either 'goreleaser' (default) or 'goreleaser-pro'
+#        distribution: goreleaser
+#        version: latest
+#        args: release -f .goreleaser.yml --rm-dist --debug
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+#        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+#        FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
 
     - name: create docs
       run: |
@@ -46,7 +46,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
       with:
-        source_file: '/tmp/*.md'
+        source_file: 'docs'
         destination_repo: 'kobrikx/homebrew-testize'
         destination_folder: 'docs'
         user_email: 'kobrikx@gmail.com'

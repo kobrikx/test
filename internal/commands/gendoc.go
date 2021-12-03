@@ -17,7 +17,7 @@ func (b *commandsBuilder) newGendocCmd() *gendocCmd {
 		Use:   "gendoc",
 		Short: "Create md Docs for website",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := doc.GenMarkdownTree(rootCmd, "/tmp")
+			err := doc.GenMarkdownTree(rootCmd, "./docs")
 			if err != nil {
 				return err
 			}
