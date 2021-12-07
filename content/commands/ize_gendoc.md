@@ -1,6 +1,6 @@
 ## ize gendoc
 
-Create md Docs for website
+Create Docs
 
 ```
 ize gendoc [flags]

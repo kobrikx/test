@@ -26,7 +26,7 @@
 * [ize config](ize_config.md)	 - Manage configuration.
 * [ize deploy](ize_deploy.md)	 - Manage deployments.
 * [ize env](ize_env.md)	 - Manage environment.
-* [ize gendoc](ize_gendoc.md)	 - Create md Docs for website
+* [ize gendoc](ize_gendoc.md)	 - Create Docs
 * [ize init](ize_init.md)	 - Сreates an IZE configuration file.
 * [ize mfa](ize_mfa.md)	 - MFA management.
 * [ize ssh](ize_ssh.md)	 - SSH connection to ECS container of the app.
