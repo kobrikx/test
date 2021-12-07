@@ -37,7 +37,7 @@ jobs:
         RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
 
-    - name: create docs
+    - name: Create docs
       run: |
         mkdir commands
         go run ./cmd gendoc
@@ -47,7 +47,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
       with:
-        source_file: 'docs'
+        source_file: 'commands'
         destination_repo: 'kobrikx/homebrew-testize'
         destination_folder: 'content'
         user_email: 'kobrikx@gmail.com'
