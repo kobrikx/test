@@ -48,6 +48,7 @@ jobs:
           cd remote
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
+          git add -a
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
