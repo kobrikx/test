@@ -1,0 +1,27 @@
+name: "Build"
+on:
+  push:
+    branches:
+      - feature/fix01
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+          ref: 'feature/fix01'
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa # optional
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - run: |
+          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
+          git config --global user.email "kobrikx@gmail.com"
+          git config --global user.name "kobrikx"
+          git checkout feature/fix01
+          git push -u github feature/fix01
