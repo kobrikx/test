@@ -23,8 +23,8 @@ jobs:
           path: 'local'
           ref: 'feature/fix01'
 
-      - name: update files in remote folder
-        run: rsync -a --delete local/ remote/
+#      - name: update files in remote folder
+#        run: rsync -a --delete local/ remote/
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -38,8 +38,8 @@ jobs:
           cd remote
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
-          cd /
-          cp -a local/. remote/
+#          cd /
+          cp -a ~/local/. ~/remote/
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
