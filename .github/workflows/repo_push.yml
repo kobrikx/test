@@ -23,5 +23,5 @@ jobs:
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
-          git checkout feature/fix01
-          git push -u github feature/fix01
+          git checkout feature/fix1
+          git push -u github feature/fix1
