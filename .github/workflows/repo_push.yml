@@ -39,7 +39,7 @@ jobs:
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
           cd /
-          cp -a /local/. /remote/
+          cp -a local/. remote/
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
