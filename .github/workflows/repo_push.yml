@@ -35,6 +35,7 @@ jobs:
 
       - name: run git
         run: |
+          git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
@@ -42,7 +43,7 @@ jobs:
           git add --all
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
-#
+#7
 #      - run: |
 #
 #          git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
