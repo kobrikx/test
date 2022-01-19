@@ -49,7 +49,6 @@ jobs:
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
           git add --all
-          git checkout feature/fix01
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
