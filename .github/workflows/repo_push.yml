@@ -35,6 +35,8 @@ jobs:
 
       - name: run git
         run: |
+          ls -a local
+          ls -a remote
           cd remote
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
