@@ -23,9 +23,7 @@ jobs:
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
           git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
-#          git checkout feature/fix-01
           git clone git@github.com:kobrikx/test.git local --branch feature/fix01 --single-branch
-#          git checkout
           rsync -a --delete local/ remote/
           git add remote
           git commit -am "Commit to @rjr"
