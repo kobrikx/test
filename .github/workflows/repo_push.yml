@@ -49,7 +49,7 @@ jobs:
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
           git add --all
-          git commit -am "Commit to @rjr"
+          git commit -m "Commit to @rjr"
           git push -u github feature/fix01
 #
 #
