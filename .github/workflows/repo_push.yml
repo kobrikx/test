@@ -25,9 +25,13 @@ jobs:
           git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
           git clone git@github.com:kobrikx/test.git local --branch feature/fix01 --single-branch
           rsync -a --delete local/ remote/
-          git add remote
+          cd remote
+          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
+          git checkout feature/fix01
+          git add --all
           git commit -am "Commit to @rjr"
-          git push
+          git push -u github feature/fix01
+
 
 
 
@@ -37,3 +41,4 @@ jobs:
 #          git checkout feature/fix01
 #          git push -u github feature/fix01
 #         --branch feature/fix01 --single-branch
+# git push --set-upstream origin feature/check-dev-to-prerelease
