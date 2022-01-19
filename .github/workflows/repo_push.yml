@@ -40,9 +40,12 @@ jobs:
           cd remote
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
-          cd ~
-          rsync -r local/ remote
+
+      - name: ddsd
+        run: |
+          rsync -a --delete local/ remote/
           ls -a remote
+          cd remote
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
