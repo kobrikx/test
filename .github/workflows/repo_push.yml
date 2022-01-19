@@ -40,6 +40,7 @@ jobs:
           cd remote
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
+          cd ~
           rsync -r local/ remote
           ls -a remote
           git commit -am "Commit to @rjr"
