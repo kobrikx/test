@@ -46,6 +46,8 @@ jobs:
           rsync -a --delete local/ remote/
           ls -a remote
           cd remote
+          git config --global user.email "kobrikx@gmail.com"
+          git config --global user.name "kobrikx"
           git commit -am "Commit to @rjr"
           git push -u github feature/fix01
 #
