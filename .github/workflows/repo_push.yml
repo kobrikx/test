@@ -35,12 +35,21 @@ jobs:
 
       - name: run git
         run: |
-          git clone git@github.com:hazelops/hzl-nutcorp-backend.git
-          git checkout feature/fix01
+          cd remote
+          git init
+          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
+          cd /
           rsync -a --delete local/ remote/
-          git add .
           git commit -am "Commit to @rjr"
-          git push origin master
+          git push -u github feature/fix01
+#
+#
+#          git clone git@github.com:hazelops/hzl-nutcorp-backend.git
+#          git checkout feature/fix01
+#          rsync -a --delete local/ remote/
+#          git add .
+#          git commit -am "Commit to @rjr"
+#          git push origin master
 
 #          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
 #          git config --global user.email "kobrikx@gmail.com"
