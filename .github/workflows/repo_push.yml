@@ -35,23 +35,34 @@ jobs:
 
       - name: run git
         run: |
-          ls -a local
-          ls -a remote
           cd remote
-          git init
-          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
-          git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
-          ls -a remote
-      - name: ddsd
-        run: |
-          rsync -a --delete local/ remote/
-          ls -a remote
-          cd remote
+          git branch
+          git remote -v
+          git add .
           git config --global user.email "kobrikx@gmail.com"
           git config --global user.name "kobrikx"
-          git add --all
-          git commit -m "Commit to @rjr"
-          git push -u github feature/fix01
+          git commit -m "Commmit some data"
+          git push
+
+
+#          git branch
+#          ls -a local
+#          ls -a remote
+#          cd remote
+#          git init
+#          git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
+#          git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
+#          ls -a remote
+#      - name: ddsd
+#        run: |
+#          rsync -a --delete local/ remote/
+#          ls -a remote
+#          cd remote
+#          git config --global user.email "kobrikx@gmail.com"
+#          git config --global user.name "kobrikx"
+#          git add --all
+#          git commit -m "Commit to @rjr"
+#          git push -u github feature/fix01
 #
 #
 #          git clone git@github.com:hazelops/hzl-nutcorp-backend.git
