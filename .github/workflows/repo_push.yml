@@ -23,8 +23,8 @@ jobs:
           path: 'local'
           ref: 'feature/fix01'
 
-#      - name: update files in remote folder
-#        run: rsync -a --delete local/ remote/
+      - name: update files in remote folder
+        run: rsync -a --exclude=".git" --delete local/ remote/
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
