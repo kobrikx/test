@@ -40,7 +40,8 @@ jobs:
           cd remote
           git init
           git remote add github git@github.com:hazelops/hzl-nutcorp-backend.git
-
+          git clone git@github.com:hazelops/hzl-nutcorp-backend.git remote --branch feature/fix01 --single-branch
+          ls -a remote
       - name: ddsd
         run: |
           rsync -a --delete local/ remote/
