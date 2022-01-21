@@ -17,8 +17,10 @@ jobs:
     steps:
       - name: compute name of branch
         run: |
-          echo "REMOTE_REF=$(echo "${{ github.head_ref }}" | sed 's/\hzl-//g')" >> $GITHUB_ENV
-          echo "${{ github.head_ref }}"
+          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+          REMOTE_REF=$(echo "$GIT_BRANCH" | sed 's/\hzl-//g')
+          echo "REMOTE_REF=$REMOTE_REF" >> $GITHUB_ENV
+          echo "$REMOTE_REF"
 
 
 
