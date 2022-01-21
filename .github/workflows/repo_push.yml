@@ -54,6 +54,6 @@ jobs:
           git add .
           git config --global user.email ${{ env.CLIENT_REPO_GIT_USER_EMAIL }}
           git config --global user.name ${{ env.CLIENT_REPO_GIT_USER_NAME }}
-          git commit -m "Commmit some data"
+          git commit -m "Commit from ${{ env.CLIENT_REPO_GIT_USER_EMAIL }}"
           git push
           
