@@ -14,7 +14,7 @@ jobs:
   repo-sync:
     runs-on: ubuntu-latest
     steps:
-      - name: compute name of remote branch
+      - name: Compute name of remote branch
         run: |
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           REMOTE_REF=$(echo "$GIT_BRANCH" | sed 's/\hzl-//g')
@@ -22,7 +22,7 @@ jobs:
           echo "$REMOTE_REF"
           echo "$GITHUB_REF"
 
-      - name: checkout in remote repo
+      - name: Checkout in remote repo
         uses: actions/checkout@v2
         with:
           repository: ${{ env.CLIENT_REPO_NAME }}
@@ -30,13 +30,13 @@ jobs:
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
           ref: ${{ env.REMOTE_REF }}
 
-      - name: checkout in local repo
+      - name: Checkout in local repo
         uses: actions/checkout@v2
         with:
           path: 'local'
           ref: ${{ env.GITHUB_REF }}
 
-      - name: update files in remote folder
+      - name: Update files in remote folder
         run: rsync -a --exclude=".git" --delete local/ remote/
 
       - name: Install SSH key
@@ -46,7 +46,7 @@ jobs:
           name: id_rsa # optional
           known_hosts: unnecessary
 
-      - name: run git
+      - name: Push changes to remote repo
         run: |
           cd remote
           git branch
