@@ -17,15 +17,19 @@ jobs:
     steps:
       - name: compute name of branch
         run: |
-          REMOTE_REF=$(echo "${{ env.GITHUB_REF }}" | sed 's/\hzl-//g')
-          echo {{ var.REMOTE_REF }}
+          REMOTE_REF=$(echo "${{ env.GITHUB_REF }}" | sed 's/\hzl-//g') >> $GITHUB_ENV
+          echo "${{ env.REMOTE_REF }}"
+
+
+
+
       - name: checkout in remote repo
         uses: actions/checkout@v2
         with:
           repository: ${{ env.CLIENT_REPO_NAME }}
           path: 'remote'
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ref: ${{ var.REMOTE_REF }}
+          ref: ${{ env.REMOTE_REF }}
 # вынести в ENV наверх чтобы скрипт был реюзебл. \
       - name: checkout in local repo
         uses: actions/checkout@v2
