@@ -1,10 +1,3 @@
 test
 test
 test
-test
-test
-
-
-
-test
-6666
