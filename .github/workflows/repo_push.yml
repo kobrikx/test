@@ -21,7 +21,7 @@ jobs:
           REMOTE_REF=$(echo "$GIT_BRANCH" | sed 's/\hzl-//g')
           echo "REMOTE_REF=$REMOTE_REF" >> $GITHUB_ENV
           echo "$REMOTE_REF"
-          echo "${{ env.GITHUB_REF }}"
+          echo "$GITHUB_REF"
 
 
 
