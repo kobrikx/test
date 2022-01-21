@@ -1,27 +1,38 @@
 name: "Build"
+
+env:
+  CLIENT_REPO_GIT_USER_EMAIL: "kobrikx@gmail.com"
+  CLIENT_REPO_GIT_USER_NAME: "kobrikx"
+  CLIENT_REPO_NAME: 'hazelops/hzl-nutcorp-backend'
 on:
   push:
     branches:
-      - feature/fix01
+      - hzl-*
   workflow_dispatch:
-
+# ref branch-name посмотреть в мануале гитхаб экшенс
+#
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
     steps:
+      - name: compute name of branch
+        run: |
+          REMOTE_REF=$(echo "${{ env.GITHUB_REF }}" | sed 's/\hzl-//g')
+          echo {{ var.REMOTE_REF }}
       - name: checkout in remote repo
         uses: actions/checkout@v2
         with:
-          repository: 'hazelops/hzl-nutcorp-backend'
+          repository: ${{ env.CLIENT_REPO_NAME }}
           path: 'remote'
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ref: 'feature/fix01'
-
+          ref: ${{ var.REMOTE_REF }}
+# вынести в ENV наверх чтобы скрипт был реюзебл. \
       - name: checkout in local repo
         uses: actions/checkout@v2
         with:
           path: 'local'
-          ref: 'feature/fix01'
+          ref: ${{ env.GITHUB_REF }}
+# текущая ветка пойдет в репозиторий, динамическое переменная - здесь просто реф
 
       - name: update files in remote folder
         run: rsync -a --exclude=".git" --delete local/ remote/
@@ -39,8 +50,8 @@ jobs:
           git branch
           git remote -v
           git add .
-          git config --global user.email "kobrikx@gmail.com"
-          git config --global user.name "kobrikx"
+          git config --global user.email ${{ env.CLIENT_REPO_GIT_USER_EMAIL }}
+          git config --global user.name ${{ env.CLIENT_REPO_GIT_USER_NAME }}
           git commit -m "Commmit some data"
           git push
 
