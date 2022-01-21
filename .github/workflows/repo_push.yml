@@ -56,3 +56,4 @@ jobs:
           git config --global user.name ${{ env.CLIENT_REPO_GIT_USER_NAME }}
           git commit -m "Commmit some data"
           git push
+          
