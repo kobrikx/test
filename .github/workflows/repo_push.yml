@@ -1,8 +1,8 @@
 name: "Build"
 
 env:
-  CLIENT_REPO_GIT_USER_EMAIL: "kobrikx@gmail.com"
-  CLIENT_REPO_GIT_USER_NAME: "kobrikx"
+  CLIENT_REPO_GIT_USER_EMAIL: "dmitry@hazelops.com"
+  CLIENT_REPO_GIT_USER_NAME: "AutomationD"
   CLIENT_REPO_NAME: 'hazelops/hzl-nutcorp-backend'
 on:
   push:
