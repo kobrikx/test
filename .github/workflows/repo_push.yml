@@ -26,6 +26,7 @@ jobs:
       run: |
         mkdir -p commands
         go run ./cmd gendoc
+
     - name: get theme in css
       run: |
        curl -o themes  https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css
