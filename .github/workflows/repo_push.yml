@@ -45,6 +45,7 @@ jobs:
         sudo rm *.pdf
         sudo mv ize.html index.html
         sudo sed -i 's/.md/.html/g' *
+        sudo sed -i 's/ize.html/index.html/g' *
 
     - name: Pushes ize commands to ize.sh
       uses: dmnemec/copy_file_to_another_repo_action@main
