@@ -34,7 +34,7 @@ jobs:
       with:
         input_dir: commands
         output_dir: docs
-        theme: themes/tailwind.min.css
+        theme: themes
         # Default is true, can set to false to only get PDF files
         build_html: true
     - name: remove pdfs #This needs because action creates PDF by default
