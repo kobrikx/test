@@ -31,22 +31,22 @@ jobs:
       uses: baileyjm02/markdown-to-pdf@v1
       with:
         input_dir: commands
-        output_dir: htmls
+        output_dir: docs
         # for example <img src="./images/file-name.png">
         # Default is true, can set to false to only get PDF files
         build_html: true
     - name: remove pdfs
       run: |
-        cd htmls
+        cd docs
         sudo rm *.pdf
     - name: Pushes ize commands to ize.sh
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
       with:
-        source_file: 'htmls'
+        source_file: 'docs'
         destination_repo: 'kobrikx/homebrew-testize'
-        destination_folder: 'content'
+#        destination_folder: 'content'
         user_email: 'ize@hazelops.com'
         user_name: 'ize'
         commit_message: 'Add commands from Ize'
