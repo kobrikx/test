@@ -39,7 +39,6 @@ jobs:
       run: |
         cd docs
         sudo rm *.pdf
-        sudo rm *.md
     - name: Pushes ize commands to ize.sh
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
