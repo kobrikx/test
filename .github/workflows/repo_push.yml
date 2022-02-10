@@ -37,6 +37,7 @@ jobs:
         build_html: true
     - name: remove pdfs
       run: |
+        cd htmls
         rm *.pdf
     - name: Pushes ize commands to ize.sh
       uses: dmnemec/copy_file_to_another_repo_action@main
