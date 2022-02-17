@@ -1,0 +1,70 @@
+name: "HZL Reset"
+defaults:
+  run:
+    shell: bash
+env:
+  EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
+  ENV_BRANCHES: |
+    {
+      "main": "main",
+      "feature/test":"feature/test"
+    }
+  EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
+  EXTERNAL_REPO_GIT_USER_NAME: AutomationD
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Branch Name
+        options:
+          - main
+          - feature/test
+        required: true
+        default: main
+
+jobs:
+  hzl-sync:
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+      ENV: ${{ github.event.inputs.env }}
+      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)[github.event.inputs.env] }}
+    steps:
+      - name: Compute name of remote branch
+        run: |
+          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+          echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
+          EXTERNAL_REF=$(echo "$GIT_BRANCH" | sed 's/\ext-//g')
+          echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
+          echo "$GIT_BRANCH"
+          echo "$EXTERNAL_REF"
+          echo "$GITHUB_REF"
+
+      - name: Clone internal repo
+        uses: actions/checkout@v2
+        with:
+#          path: internal
+          ref: ${{ env.GITHUB_REF }}
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa # optional
+          known_hosts: unnecessary
+
+      - name: Push changes to external repo
+        run: |
+          git remote add external ${{ env.EXTERNAL_REPO_NAME }}
+          git branch -d ${{ env.GIT_BRANCH }}
+          git checkout -b external
+#          git remote -v
+#          # git reset --hard origin/${{ env.EXTERNAL_REF }}
+#          git add .
+#          git config --global user.email ${{ env.EXTERNAL_REPO_GIT_USER_EMAIL }}
+#          git config --global user.name ${{ env.EXTERNAL_REPO_GIT_USER_NAME }}
+#          git commit -m "${{ fromJSON(steps.get_pull_request_body.outputs.result)['data']['body'] }}"
+#          git push --set-upstream origin ${{ env.EXTERNAL_REF }}
+

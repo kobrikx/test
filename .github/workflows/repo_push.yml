@@ -107,3 +107,30 @@ jobs:
 #          git config --global user.name ${{ env.EXTERNAL_REPO_GIT_USER_NAME }}
 #          git commit -m "${{ fromJSON(steps.get_pull_request_body.outputs.result)['data']['body'] }}"
 #          git push --set-upstream origin ${{ env.EXTERNAL_REF }}
+
+
+
+hzl-bot-it-infra
+
+Список бранчей -> ENV (В виде json списка, так же как и регионы) -  сериализованный список в формате json
+git clone внешний репозиторий.
+Во внутренний добавляю remote (external) из локальной папки
+
+2) локальный репозиторий из того репозитория и делаю reset
+checkout branch reset
+
+
+начинаем с main (возьмем два раза)
+
+Лист бранчей - я их читаю, и если его нет, то я его создаю?
+
+
+ENV: branches_list in json
+
+git remote  (подключаю удаленный репозиторий с помощью SSH ключа)
+
+git remote (подключаю локальный репозиторий с помощью github токена)
+
+git checkout внешний бранч ?
+
+git reset локальный бранч ?
