@@ -29,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: "${{ github.sha }}"
-      ENV: ${{ github.event.inputs.env }}
-      ENV_BRANCH: ${{ fromJSON(vasy.ENV_BRANCHES)[github.event.inputs.vasy] }}
+      ENV: ${{ github.event.inputs.vasy }}
+      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)[github.event.inputs.env] }}
     steps:
       - name: Compute name of remote branch
         run: |
