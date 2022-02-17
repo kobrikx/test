@@ -22,7 +22,11 @@ jobs:
           echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
           echo "$EXTERNAL_REF"
           echo "$GITHUB_REF"
-
+      - name: Clone internal repo
+        uses: actions/checkout@v2
+        with:
+          path: internal
+          ref: ${{ env.GITHUB_REF }}
       - name: Clone external repo
         uses: actions/checkout@v2
         with:
