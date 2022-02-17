@@ -58,7 +58,7 @@ jobs:
       - name: Push changes to external repo
         run: |
           git remote add external ${{ env.EXTERNAL_REPO_NAME }}
-          git branch -d ${{ env.GIT_BRANCH }}
+          git branch -d ${{ env.GITHUB_REF }}
           git checkout -b external
 #          git remote -v
 #          # git reset --hard origin/${{ env.EXTERNAL_REF }}
