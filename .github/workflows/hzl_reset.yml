@@ -2,7 +2,7 @@ name: "HZL Reset"
 defaults:
   run:
     shell: bash
-env:
+vasy:
   EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
   ENV_BRANCHES: |
     {
@@ -15,7 +15,7 @@ env:
 on:
   workflow_dispatch:
     inputs:
-      chuchu:
+      vasy:
         type: choice
         description: Branch Name
         options:
@@ -30,7 +30,7 @@ jobs:
     env:
       TAG: "${{ github.sha }}"
       ENV: ${{ github.event.inputs.env }}
-      ENV_BRANCH: ${{ fromJSON(chuchu.ENV_BRANCHES)[github.event.inputs.env] }}
+      ENV_BRANCH: ${{ fromJSON(vasy.ENV_BRANCHES)[github.event.inputs.vasy] }}
     steps:
       - name: Compute name of remote branch
         run: |
