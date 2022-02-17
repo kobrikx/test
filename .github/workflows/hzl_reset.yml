@@ -30,7 +30,7 @@ jobs:
     env:
       TAG: "${{ github.sha }}"
       ENV: ${{ github.event.inputs.vasy }}
-      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)[github.event.inputs.env] }}
+      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)[github.event.inputs.vasy] }}
     steps:
       - name: Compute name of remote branch
         run: |
