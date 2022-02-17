@@ -7,7 +7,7 @@ env:
   ENV_BRANCHES: |
     {
       "main": "main",
-      "feature/test":"feature/test"
+      "test":"feature/test"
     }
   EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
   EXTERNAL_REPO_GIT_USER_NAME: AutomationD
@@ -20,7 +20,7 @@ on:
         description: Branch Name
         options:
           - main
-          - feature/test
+          - test
         required: true
         default: main
 
