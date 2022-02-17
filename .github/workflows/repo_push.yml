@@ -32,8 +32,8 @@ jobs:
           ref: ${{ env.EXTERNAL_REF }}
 
       - name: Get changed files
-              id: changed-files
-              uses: tj-actions/changed-files@v15
+        id: changed-files
+        uses: tj-actions/changed-files@v15
 
       - name: List all changed files
         run: |
