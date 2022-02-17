@@ -41,6 +41,8 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v15
+        with:
+          path: external
 
       - name: List all changed files
         run: |
