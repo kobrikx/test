@@ -70,7 +70,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: main
 
 #          git remote -v
 #          # git reset --hard origin/${{ env.EXTERNAL_REF }}
