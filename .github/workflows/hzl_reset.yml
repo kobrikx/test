@@ -56,7 +56,7 @@ jobs:
       - name: Pull changes to internal repo
         run: |
           git remote add external git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
-          git remote add internal git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
+          git remote -v
           git checkout ${{ env.GIT_BRANCH}}       #(checkout local branch)
           git reset --hard external ${{ env.GIT_BRANCH}}
 #          git
