@@ -53,7 +53,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa # optional
           known_hosts: unnecessary
-
       - name: Pull changes to internal repo
         run: |
           git remote add external git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
