@@ -3,12 +3,11 @@ defaults:
   run:
     shell: bash
 env:
+  EXTERNAL_REPO_URL: git@github.com:kobrikx/homebrew-testize.git
   EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
   ENV_BRANCHES: |
-    {
-      "main": "main",
-      "feature/test": "feature/test"
-    }
+    {["main", "feature/test"]}
+   MATRIX
   EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
   EXTERNAL_REPO_GIT_USER_NAME: AutomationD
 
@@ -30,7 +29,7 @@ jobs:
     env:
       TAG: "${{ github.sha }}"
       ENV: ${{ github.event.inputs.env }}
-#      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)[github.event.inputs.vasy] }}
+#      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)}}  -  убираем из env в матрицу (ПОЧИТАТЬ про эту конструкцию)
     steps:
       - name: Compute name of remote branch
         run: |
@@ -55,11 +54,25 @@ jobs:
           name: id_rsa # optional
           known_hosts: unnecessary
 
-      - name: Push changes to external repo
+      - name: Pull changes to internal repo
         run: |
-          git remote add external ${{ env.EXTERNAL_REPO_NAME }}
-          git branch -d ${{ env.GITHUB_REF }}
-          git checkout -b external
+          git remote add external git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
+          git remote add internal git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
+#          git branch -d ${{ env.GITHUB_REF }}
+          git checkout main       (checkout local branch)
+          git reset --hard external/main
+#          git
+#          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
+#
+#          Выборка по списку - матрицей или в баше по очереди?
+#          Матрицу можно сделать.
+#
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
 #          git remote -v
 #          # git reset --hard origin/${{ env.EXTERNAL_REF }}
 #          git add .
@@ -67,4 +80,14 @@ jobs:
 #          git config --global user.name ${{ env.EXTERNAL_REPO_GIT_USER_NAME }}
 #          git commit -m "${{ fromJSON(steps.get_pull_request_body.outputs.result)['data']['body'] }}"
 #          git push --set-upstream origin ${{ env.EXTERNAL_REF }}
-
+#
+# strategy:
+#       matrix:
+#         go-version: [1.16.x]
+#         os: [ubuntu-latest, macos-latest, windows-latest]
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#     - name: Install Go
+#       uses: actions/setup-go@v2
+#       with:
+#         go-version: ${{ matrix.go-version }}
