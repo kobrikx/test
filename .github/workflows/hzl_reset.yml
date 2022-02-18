@@ -59,7 +59,7 @@ jobs:
           git remote -v
           git checkout ${{ env.GIT_BRANCH}}       #(checkout local branch)
           git fetch kotobus
-          git reset --hard kotobus/${{ env.GIT_BRANCH}}
+          git reset --hard kotobus/main
 #          git
 #          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
 #
