@@ -22,7 +22,6 @@ jobs:
     steps:
       - name: Compute name of remote branch
         run: |
-#          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
           EXTERNAL_REF=$(echo "${{ matrix.env_branch }}" | sed 's/\ext-//g')
           echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
