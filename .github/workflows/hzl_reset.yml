@@ -26,20 +26,11 @@ on:
 jobs:
   hzl-sync:
     runs-on: ubuntu-latest
-    env:
-      TAG: "${{ github.sha }}"
-      ENV: ${{ github.event.inputs.env }}
-#      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)}}  -  убираем из env в матрицу (ПОЧИТАТЬ про эту конструкцию)
+#    env:
+#      ENV: ${{ github.event.inputs.env }}
 strategy:
-     matrix:
-#       go-version: [1.16.x]
-       env_branch: [feature/test, feature/test2, feature/test3]
-#   runs-on: ${{ matrix.os }}
-#   steps:
-#   - name: Install Go
-#     uses: actions/setup-go@v2
-#     with:
-#       go-version: ${{ matrix.go-version }}
+  matrix:
+    env_branch: [feature/test, feature/test2, feature/test3]
 
     steps:
       - name: Compute name of remote branch
