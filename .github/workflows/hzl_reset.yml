@@ -13,24 +13,24 @@ env:
 
 on:
   workflow_dispatch:
-    inputs:
-      env:
-        type: choice
-        description: Branch Name
-        options:
-          - main
-          - feature/test
-        required: true
-        default: main
+#    inputs:
+#      env:
+#        type: choice
+#        description: Branch Name
+#        options:
+#          - main
+#          - feature/test
+#        required: true
+#        default: main
 
 jobs:
   hzl-sync:
     runs-on: ubuntu-latest
 #    env:
 #      ENV: ${{ github.event.inputs.env }}
-strategy:
-  matrix:
-    env_branch: [feature/test, feature/test2, feature/test3]
+  strategy:
+    matrix:
+      env_branch: [feature/test, feature/test2, feature/test3]
 
     steps:
       - name: Compute name of remote branch
