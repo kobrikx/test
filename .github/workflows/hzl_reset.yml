@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env_branch: [ext-test2, test]
+        env_branch: [test2, test]
 
     steps:
       - name: Compute name of remote branch
@@ -48,7 +48,6 @@ jobs:
           git remote -v
           git fetch client
           git checkout ${{ matrix.env_branch }}       #(checkout local branch)
-
           git reset --hard client/${{ env.EXTERNAL_REF }}
 #          git
 #          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
