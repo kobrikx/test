@@ -1,136 +1,136 @@
-name: "HZL Reset"
-
-env:
-  EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
-  EXTERNAL_REPO_GIT_USER_NAME: AutomationD
-  EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
-  EXTERNAL_BRANCHES_LIST: feature/test
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 3 * * */2'
-
-jobs:
-  hzl-sync:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Compute name of remote branch
-        run: |
-          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
-          EXTERNAL_REF=$(echo "$GIT_BRANCH" | sed 's/\ext-//g')
-          echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
-          echo "$EXTERNAL_REF"
-          echo "$GITHUB_REF"
-
-      - name: Clone internal repo
-        uses: actions/checkout@v2
-        with:
-          path: internal
-          ref: ${{ env.GITHUB_REF }}
-
-      - name: Clone external repo
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ env.EXTERNAL_REPO_NAME }}
-          path: external
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ref: ${{ env.EXTERNAL_REF }}
-          fetch-depth: 2
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v15
-        with:
-          path: external
-
-      - name: List all changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
-          done
-
-
-
-
-#          any_changed
+#name: "HZL Reset"
+#
+#env:
+#  EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
+#  EXTERNAL_REPO_GIT_USER_NAME: AutomationD
+#  EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
+#  EXTERNAL_BRANCHES_LIST: feature/test
+#
+#on:
+#  workflow_dispatch:
+#  schedule:
+#    - cron: '0 3 * * */2'
+#
+#jobs:
+#  hzl-sync:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Compute name of remote branch
+#        run: |
+#          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+#          EXTERNAL_REF=$(echo "$GIT_BRANCH" | sed 's/\ext-//g')
+#          echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
+#          echo "$EXTERNAL_REF"
+#          echo "$GITHUB_REF"
+#
 #      - name: Clone internal repo
 #        uses: actions/checkout@v2
 #        with:
 #          path: internal
 #          ref: ${{ env.GITHUB_REF }}
 #
-#      - name: Update files in external folder
+#      - name: Clone external repo
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ${{ env.EXTERNAL_REPO_NAME }}
+#          path: external
+#          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          ref: ${{ env.EXTERNAL_REF }}
+#          fetch-depth: 2
+#
+#      - name: Get changed files
+#        id: changed-files
+#        uses: tj-actions/changed-files@v15
+#        with:
+#          path: external
+#
+#      - name: List all changed files
 #        run: |
-#          rsync -a \
-#            --exclude=".git" \
-#            --exclude=".github/workflows/hzl-*" \
-#            --delete internal/ external/
+#          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+#            echo "$file was changed"
+#          done
 #
-#      - name: Install SSH key
-#        uses: shimataro/ssh-key-action@v2
-#        with:
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          name: id_rsa # optional
-#          known_hosts: unnecessary
 #
-#      #      - name: Get Pull Request ID
-#      #        run: |
-#      #          export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-#      #          echo "pr_num=$PR_NUMBER" >> $GITHUB_ENV
-#      #
-#      - uses: jwalton/gh-find-current-pr@v1
-#        id: get_pr_id
-#        with:
-#          # Can be "open", "closed", or "all".  Defaults to "open".
-#          state: closed
 #
-#      - name: Get Pull Request
-#        id: get_pull_request_body
-#        uses: actions/github-script@v5
-#        with:
-#          script: |
-#            return github.rest.pulls.get({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              pull_number: ${{ steps.get_pr_id.outputs.pr }},
-#            });
 #
-#      - name: Push changes to external repo
-#        run: |
-#          cd external
-#          git branch
-#          git remote -v
-#          # git reset --hard origin/${{ env.EXTERNAL_REF }}
-#          git add .
-#          git config --global user.email ${{ env.EXTERNAL_REPO_GIT_USER_EMAIL }}
-#          git config --global user.name ${{ env.EXTERNAL_REPO_GIT_USER_NAME }}
-#          git commit -m "${{ fromJSON(steps.get_pull_request_body.outputs.result)['data']['body'] }}"
-#          git push --set-upstream origin ${{ env.EXTERNAL_REF }}
-
-
-
-hzl-bot-it-infra
-
-Список бранчей -> ENV (В виде json списка, так же как и регионы) -  сериализованный список в формате json
-git clone внешний репозиторий.
-Во внутренний добавляю remote (external) из локальной папки
-
-2) локальный репозиторий из того репозитория и делаю reset
-checkout branch reset
-
-
-начинаем с main (возьмем два раза)
-
-Лист бранчей - я их читаю, и если его нет, то я его создаю?
-
-
-ENV: branches_list in json
-
-git remote  (подключаю удаленный репозиторий с помощью SSH ключа)
-
-git remote (подключаю локальный репозиторий с помощью github токена)
-
-git checkout внешний бранч ?
-
-git reset локальный бранч ?
+##          any_changed
+##      - name: Clone internal repo
+##        uses: actions/checkout@v2
+##        with:
+##          path: internal
+##          ref: ${{ env.GITHUB_REF }}
+##
+##      - name: Update files in external folder
+##        run: |
+##          rsync -a \
+##            --exclude=".git" \
+##            --exclude=".github/workflows/hzl-*" \
+##            --delete internal/ external/
+##
+##      - name: Install SSH key
+##        uses: shimataro/ssh-key-action@v2
+##        with:
+##          key: ${{ secrets.SSH_PRIVATE_KEY }}
+##          name: id_rsa # optional
+##          known_hosts: unnecessary
+##
+##      #      - name: Get Pull Request ID
+##      #        run: |
+##      #          export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+##      #          echo "pr_num=$PR_NUMBER" >> $GITHUB_ENV
+##      #
+##      - uses: jwalton/gh-find-current-pr@v1
+##        id: get_pr_id
+##        with:
+##          # Can be "open", "closed", or "all".  Defaults to "open".
+##          state: closed
+##
+##      - name: Get Pull Request
+##        id: get_pull_request_body
+##        uses: actions/github-script@v5
+##        with:
+##          script: |
+##            return github.rest.pulls.get({
+##              owner: context.repo.owner,
+##              repo: context.repo.repo,
+##              pull_number: ${{ steps.get_pr_id.outputs.pr }},
+##            });
+##
+##      - name: Push changes to external repo
+##        run: |
+##          cd external
+##          git branch
+##          git remote -v
+##          # git reset --hard origin/${{ env.EXTERNAL_REF }}
+##          git add .
+##          git config --global user.email ${{ env.EXTERNAL_REPO_GIT_USER_EMAIL }}
+##          git config --global user.name ${{ env.EXTERNAL_REPO_GIT_USER_NAME }}
+##          git commit -m "${{ fromJSON(steps.get_pull_request_body.outputs.result)['data']['body'] }}"
+##          git push --set-upstream origin ${{ env.EXTERNAL_REF }}
+#
+#
+#
+##hzl-bot-it-infra
+##
+##Список бранчей -> ENV (В виде json списка, так же как и регионы) -  сериализованный список в формате json
+##git clone внешний репозиторий.
+##Во внутренний добавляю remote (external) из локальной папки
+##
+##2) локальный репозиторий из того репозитория и делаю reset
+##checkout branch reset
+##
+##
+##начинаем с main (возьмем два раза)
+##
+##Лист бранчей - я их читаю, и если его нет, то я его создаю?
+##
+##
+##ENV: branches_list in json
+##
+##git remote  (подключаю удаленный репозиторий с помощью SSH ключа)
+##
+##git remote (подключаю локальный репозиторий с помощью github токена)
+##
+##git checkout внешний бранч ?
+##
+##git reset локальный бранч ?
