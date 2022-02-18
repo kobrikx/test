@@ -28,9 +28,9 @@ jobs:
     runs-on: ubuntu-latest
 #    env:
 #      ENV: ${{ github.event.inputs.env }}
-  strategy:
-    matrix:
-      env_branch: [feature/test, feature/test2, feature/test3]
+    strategy:
+      matrix:
+        env_branch: [feature/test, feature/test2, feature/test3]
 
     steps:
       - name: Compute name of remote branch
