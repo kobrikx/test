@@ -44,12 +44,12 @@ jobs:
 
       - name: Pull changes to internal repo
         run: |
-          git remote add external ${{ env.EXTERNAL_REPO_URL }}
+          git remote add client ${{ env.EXTERNAL_REPO_URL }}
           git remote -v
-          git fetch external
+          git fetch client
           git checkout ${{ matrix.env_branch }}       #(checkout local branch)
 
-          git reset --hard external/${{ matrix.env_branch }}
+          git reset --hard client/${{ env.EXTERNAL_REF }}
 #          git
 #          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
 #
