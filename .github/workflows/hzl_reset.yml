@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env_branch: [ext-feature/test, test]
+        env_branch: [ext-test2, test]
 
     steps:
       - name: Compute name of remote branch
