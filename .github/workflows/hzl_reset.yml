@@ -30,6 +30,17 @@ jobs:
       TAG: "${{ github.sha }}"
       ENV: ${{ github.event.inputs.env }}
 #      ENV_BRANCH: ${{ fromJSON(env.ENV_BRANCHES)}}  -  убираем из env в матрицу (ПОЧИТАТЬ про эту конструкцию)
+strategy:
+     matrix:
+#       go-version: [1.16.x]
+       env_branch: [feature/test, feature/test2, feature/test3]
+#   runs-on: ${{ matrix.os }}
+#   steps:
+#   - name: Install Go
+#     uses: actions/setup-go@v2
+#     with:
+#       go-version: ${{ matrix.go-version }}
+
     steps:
       - name: Compute name of remote branch
         run: |
@@ -55,11 +66,11 @@ jobs:
           known_hosts: unnecessary
       - name: Pull changes to internal repo
         run: |
-          git remote add kotobus ${{ env.EXTERNAL_REPO_URL }}
+          git remote add external ${{ env.EXTERNAL_REPO_URL }}
           git remote -v
-          git checkout ${{ env.GIT_BRANCH}}       #(checkout local branch)
-          git fetch kotobus
-          git reset --hard kotobus/main
+          git checkout ${{ matrix.env_branch }}       #(checkout local branch)
+          git fetch external
+          git reset --hard external/${{ matrix.env_branch }}
 #          git
 #          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
 #
@@ -70,7 +81,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          branch: ${{ matrix.env_branch }}
 
 #          git remote -v
 #          # git reset --hard origin/${{ env.EXTERNAL_REF }}
