@@ -58,7 +58,7 @@ jobs:
           git remote add external git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
           git remote add internal git@github.com:${{ env.EXTERNAL_REPO_URL }}.git
 #          git branch -d ${{ env.GITHUB_REF }}
-          git checkout main       (checkout local branch)
+          git checkout ${{ env.GIT_BRANCH}}       #(checkout local branch)
           git reset --hard external/main
 #          git
 #          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
