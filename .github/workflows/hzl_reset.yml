@@ -12,29 +12,19 @@ env:
 
 on:
   workflow_dispatch:
-#    inputs:
-#      env:
-#        type: choice
-#        description: Branch Name
-#        options:
-#          - main
-#          - feature/test
-#        required: true
-#        default: main
-
 jobs:
   hzl-sync:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env_branch: [feature/test]
+        env_branch: [ext-feature/test2]
 
     steps:
       - name: Compute name of remote branch
         run: |
-          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+#          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
-          EXTERNAL_REF=$(echo "$GIT_BRANCH" | sed 's/\ext-//g')
+          EXTERNAL_REF=$(echo "${{ matrix.env_branch }}" | sed 's/\ext-//g')
           echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
           echo "$GIT_BRANCH"
           echo "$EXTERNAL_REF"
