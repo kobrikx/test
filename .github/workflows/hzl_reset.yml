@@ -7,8 +7,6 @@ env:
   EXTERNAL_REPO_NAME: kobrikx/homebrew-testize
   ENV_BRANCHES: |
     {["main", "feature/test"]}
-  EXTERNAL_REPO_GIT_USER_EMAIL: dmitry@hazelops.com
-  EXTERNAL_REPO_GIT_USER_NAME: AutomationD
 
 on:
   workflow_dispatch:
@@ -44,7 +42,7 @@ jobs:
 
       - name: Pull changes to internal repo
         run: |
-          git remote add client ${{ env.EXTERNAL_REPO_URL }}
+          git remote add client ${{ env.EXTERNAL_REPO_NAME }}
           git remote -v
           git fetch client
           git checkout ${{ matrix.env_branch }}       #(checkout local branch)
