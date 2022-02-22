@@ -1,58 +1,38 @@
-name: "HZL Reset"
-defaults:
-  run:
-    shell: bash
-env:
-  EXTERNAL_REPO_URL: git@github.com:kobrikx/homebrew-testize.git
-
-
+name: "Create dev release"
 on:
   workflow_dispatch:
 jobs:
-  hzl-sync:
+  create_on_push:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        env_branch: [test2, test]
 
     steps:
-      - name: Compute name of remote branch
-        run: |
-          echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
-          EXTERNAL_REF=$(echo "${{ matrix.env_branch }}" | sed 's/\ext-//g')
-          echo "EXTERNAL_REF=$EXTERNAL_REF" >> $GITHUB_ENV
-          echo "$GIT_BRANCH"
-          echo "$EXTERNAL_REF"
-          echo "$GITHUB_REF"
+    - name: Check Out Repo
+      uses: actions/checkout@v2
 
-      - name: Clone internal repo
-        uses: actions/checkout@v2
-        with:
-#          path: internal
-          ref: ${{ env.GITHUB_REF }}
+    - name: Delete release
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true # default: false
+        tag_name: 0.0.0-dev # tag name to delete
+        repo: hazelops/ize # target repo (optional). defaults to repo running this action
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: id_rsa # optional
-          known_hosts: unnecessary
+    - name: install gemfury
+      run: |
+        sudo apt-get -y install ruby
+        sudo gem install gemfury
 
-      - name: Pull changes to internal repo
-        run: |
-          git remote add client ${{ env.EXTERNAL_REPO_URL }}
-          git remote -v
-          git fetch client
-          git checkout ${{ matrix.env_branch }}       #(checkout local branch)
-          git reset --hard client/${{ env.EXTERNAL_REF }}
-#          git
-#          Запушить отсюда надо в мой github (c помощью GHA или вручную используя github token)
-#
-#          Выборка по списку - матрицей или в баше по очереди?
-#          Матрицу можно сделать.
-#
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ matrix.env_branch }}
+    - name: list dev packages # Show list of linux packages in Gemfury
+      run: |
+        fury versions deb:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury versions rpm:ize  --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      continue-on-error: true
+
+    - name: yank old versions of dev # Since we have AMD64 and ARM64 versions of ize - we need to run every remove action twice
+      run: |
+        fury yank deb:ize --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury yank deb:ize --version=0.0.0~dev --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury yank rpm:ize --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+        fury yank rpm:ize --version=0.0.0~dev-1 --api-token=${{ secrets.FURY_ACCESS_TOKEN }}
+      continue-on-error: true
