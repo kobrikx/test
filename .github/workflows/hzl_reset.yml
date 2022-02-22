@@ -6,17 +6,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check Out Repo
-      uses: actions/checkout@v2
-
-    - name: Delete release
-      uses: dev-drprasad/delete-tag-and-release@v0.2.0
-      with:
-        delete_release: true # default: false
-        tag_name: 0.0.0-dev # tag name to delete
-        repo: hazelops/ize # target repo (optional). defaults to repo running this action
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: install gemfury
       run: |
