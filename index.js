@@ -9,8 +9,8 @@ const toolName = 'ize';
 async function exec() {
     try {
         let toolPath;
-        // const version = core.getInput('version');
-        const version = '0.3.0';
+        const version = core.getInput('version');
+        // const version = '0.3.0';
 
         // is this version already in our cache
         toolPath = cache.find(toolName, version);
