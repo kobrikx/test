@@ -32,8 +32,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ env.AWS_REGION }}
 
-    - name: test action kobrikx
-      uses: kobrikx/test@0.0.4
+      - name: test action kobrikx
+        uses: kobrikx/test@0.0.4
 
-    - name: run ize
-      run: ize --version
+      - name: run ize
+        run: ize --version
