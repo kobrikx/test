@@ -35,7 +35,7 @@ async function downloadCLI(version) {
     const permissions = 0o755;
 
     await fs.chmod(toolPath, permissions);
-    
+
     return await cache.cacheFile(toolPath, toolName, toolName, version, os.arch());
 }
 

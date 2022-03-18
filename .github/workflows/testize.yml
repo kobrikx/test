@@ -33,7 +33,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: test action kobrikx
-        uses: kobrikx/test@0.0.8
+        uses: kobrikx/test@0.0.9
 
 
       - name: test file
