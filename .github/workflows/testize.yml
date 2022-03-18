@@ -33,12 +33,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: test action kobrikx
-        uses: kobrikx/test@0.0.5
+        uses: kobrikx/test@0.0.6
         with:
           version: 0.3.0
 
       - name: test file
         run: file /opt/hostedtoolcache/ize/0.3.0/x64/ize
-        
+
       - name: run ize
         run: ize --version
