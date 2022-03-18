@@ -34,6 +34,8 @@ jobs:
 
     - name: test action kobrikx
       uses: kobrikx/test@0.0.4
+      with:
+        version: 0.0.3
 
     - name: run ize
       run: ize --version
