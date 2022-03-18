@@ -9,7 +9,7 @@ inputs:
   version:
     description: Version of the CLI to use
     required: false
-    default: latest
+    default: 0.3.0
 
 runs:
   using: 'node12'
