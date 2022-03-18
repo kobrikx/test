@@ -36,6 +36,9 @@ jobs:
         uses: kobrikx/test@0.0.5
         with:
           version: 0.3.0
-#
+
+      - name: test file
+        run: file /opt/hostedtoolcache/ize/0.3.0/x64/ize
+        
       - name: run ize
         run: ize --version
