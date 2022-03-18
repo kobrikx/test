@@ -10,7 +10,6 @@ async function exec() {
     try {
         let toolPath;
         const version = core.getInput('version');
-        // const version = '0.3.0';
 
         // is this version already in our cache
         toolPath = cache.find(toolName, version);
@@ -36,10 +35,7 @@ async function downloadCLI(version) {
     const permissions = 0o755;
 
     await fs.chmod(toolPath, permissions);
-
-    // const dir = cache.cacheDir(toolPath, toolName, version, os.arch());
-    // core.debug(dir)
-    // return dir
+    
     return await cache.cacheFile(toolPath, toolName, toolName, version, os.arch());
 }
 
