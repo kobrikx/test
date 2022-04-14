@@ -4,7 +4,7 @@ import os
 import unitza
 import sysysys
 
- terereaddfdsfsdfsdf
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo.settings')
