@@ -17,7 +17,7 @@ jobs:
         uses: reviewdog/action-flake8@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workdir: projects/duten/api
+          workdir: api
           level: info
           reporter: github-pr-review
           flake8_args: "ignore=E121,E126,E127,E128,E203,E225,E226,E231,E241,E251,E261,E265,E302,E303,E305,E402,E501,E741,W291,W292,W293,W391,W503,W504,F403,B007,950"
