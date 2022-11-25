@@ -26,6 +26,17 @@ jobs:
           repository: "hazelops/ize"
           type: "latest"
 
+      - name: Set the value
+        id: step_one
+        run: |
+          echo "ize_release=${{ steps.ize_release.outputs.release }}" >> $GITHUB_ENV
+
+
+  check:
+    needs: build
+    name: check installation
+    runs-on: ubuntu-latest
+    steps:
       - name: Install Ize
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/hazelops/ /" | sudo tee /etc/apt/sources.list.d/fury.list
@@ -33,4 +44,4 @@ jobs:
           sudo apt-get install ize
 
       - name: Run Ize and compare version
-        run: ize -version |grep ${{ steps.ize_release.outputs.release }}
+        run: ize -version |grep ${{ env.ize_release }}
