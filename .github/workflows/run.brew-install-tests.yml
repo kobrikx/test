@@ -22,9 +22,9 @@ jobs:
         uses: rez0n/actions-github-release@main
         id: ize_release
         env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "nodejs/node"
-          type: "stable"
+          token: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          repository: "hazelops/ize"
+          type: "latest"
 
       - name: Install Ize
         run: |
