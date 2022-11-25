@@ -18,10 +18,13 @@ jobs:
     runs-on: macos-latest
     steps:
 
-      - name: ize_version
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-          repository: hazelops/ize
+      - name: get ize version
+        uses: rez0n/actions-github-release@main
+        id: ize_release
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "nodejs/node"
+          type: "stable"
 
       - name: Install Ize
         run: |
@@ -29,4 +32,4 @@ jobs:
           brew install ize
 
       - name: Run Ize and compare version
-        run: ize -version |grep ${{ steps.ize_version.outputs.release }}
+        run: ize -version |grep ${{ steps.ize_release.outputs.release }}
