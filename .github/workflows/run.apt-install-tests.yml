@@ -1,4 +1,4 @@
-name: "Tests: brew install"
+name: "Tests: APT install"
 defaults:
   run:
     shell: bash
@@ -29,8 +29,8 @@ jobs:
       - name: Install Ize
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/hazelops/ /" | sudo tee /etc/apt/sources.list.d/fury.list
-          apt-get update
-          apt-get install ize
+          sudo apt-get update
+          sudo apt-get install ize
 
       - name: Run Ize and compare version
         run: ize -version |grep ${{ steps.ize_release.outputs.release }}
