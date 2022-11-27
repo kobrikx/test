@@ -29,8 +29,10 @@ jobs:
 
       - name: Save release version
         id: ize_release
-        run: echo ${{ steps.ize_release_version.outputs.release }} >> $GITHUB_OUTPUT
-
+        run: |
+          echo "release=${{ steps.ize_release_version.outputs.release }}" >> $GITHUB_OUTPUT
+          echo ${{ steps.ize_release_version.outputs.release }}
+          
   install_ize:
     name: Install On MacOS Latest
     runs-on: macos-latest
