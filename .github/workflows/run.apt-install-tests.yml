@@ -1,4 +1,4 @@
-name: "Tests: APT install"
+name: "Tests: APT Install"
 defaults:
   run:
     shell: bash
@@ -22,21 +22,10 @@ jobs:
         uses: rez0n/actions-github-release@main
         id: ize_release
         env:
-          token: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: "hazelops/ize"
           type: "latest"
 
-      - name: Set the value
-        id: step_one
-        run: |
-          echo "ize_release=${{ steps.ize_release.outputs.release }}" >> $GITHUB_ENV
-
-
-  check:
-    needs: build
-    name: check installation
-    runs-on: ubuntu-latest
-    steps:
       - name: Install Ize
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/hazelops/ /" | sudo tee /etc/apt/sources.list.d/fury.list
@@ -44,4 +33,4 @@ jobs:
           sudo apt-get install ize
 
       - name: Run Ize and compare version
-        run: ize -version |grep ${{ env.ize_release }}
+        run: ize -version |grep ${{ steps.ize_release.outputs.release }}
