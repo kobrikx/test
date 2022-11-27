@@ -20,6 +20,7 @@ jobs:
       release: ${{ steps.ize_release.outputs.release }}
     steps:
       - name: get ize version
+        id: ize_release_version
         uses: rez0n/actions-github-release@main
         env:
           token: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
@@ -28,7 +29,7 @@ jobs:
 
       - name: Save release version
         id: ize_release
-        run: echo ${{ steps.ize_release.outputs.release }} >> $GITHUB_OUTPUT
+        run: echo ${{ steps.ize_release_version.outputs.release }} >> $GITHUB_OUTPUT
 
   install_ize:
     name: Install On MacOS Latest
