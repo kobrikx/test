@@ -14,7 +14,7 @@ on:
 
 jobs:
   get_release_version:
-    name: Install On MacOS Latest
+    name: Get Release Version
     runs-on: ubuntu-latest
     outputs:
       release: ${{ steps.ize_release.outputs.release }}
