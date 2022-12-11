@@ -50,7 +50,8 @@ jobs:
 
       - name: Run Slack Failure Notification
         if: failure() && steps.izeMacTests.outcome == 'failure'
-        run: curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \"IZE installation in Ubuntu failed\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
+        run: |
+          curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \"IZE installation in Ubuntu failed\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
 
   install_ize_ubuntu:
     name: Install On Ubuntu Latest
