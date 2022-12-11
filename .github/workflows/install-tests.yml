@@ -51,7 +51,7 @@ jobs:
       - name: Run Slack Failure Notification
         if: failure() && steps.izeMacTests.outcome == 'failure'
         run: |
-          curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \"IZE installation in macOS failed\", \"icon_emoji\": \":trollface:\"}" ${{ secrets.SLACK_WEBHOOK }}
+          curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \":trollface: IZE installation in macOS failed\", \"icon_emoji\": \":trollface:\"}" ${{ secrets.SLACK_WEBHOOK }}
 
   install_ize_ubuntu:
     name: Install On Ubuntu Latest
@@ -72,5 +72,5 @@ jobs:
       - name: Run Slack Failure Notification
         if: failure() && steps.izeUbuntuTests.outcome == 'failure'
         run: |
-          curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \"IZE installation in Ubuntu failed\", \"icon_emoji\": \":trollface:\"}" ${{ secrets.SLACK_WEBHOOK }}
+          curl -X POST --data-urlencode "payload={\"channel\": \"#core-tools\", \"username\": \"ize\", \"text\": \":trollface: IZE installation in Ubuntu failed\", \"icon_emoji\": \":trollface:\"}" ${{ secrets.SLACK_WEBHOOK }}
 
