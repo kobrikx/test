@@ -51,14 +51,14 @@ jobs:
       - name: Run Slack Failure Notification
         if: failure() && steps.izeMacTests.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_CHANNEL: core-tools
-            SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-            SLACK_ICON: https://github.com/rtCamp.png?size=48
-            SLACK_MESSAGE: 'IZE installation in macOS failed'
-            SLACK_TITLE: Post Title
-            SLACK_USERNAME: ize
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_CHANNEL: core-tools
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'IZE installation in macOS failed'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: ize
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   install_ize_ubuntu:
     name: Install On Ubuntu Latest
@@ -79,11 +79,11 @@ jobs:
       - name: Run Slack Failure Notification
         if: failure() && steps.izeUbuntuTests.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_CHANNEL: core-tools
-            SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-            SLACK_ICON: https://github.com/rtCamp.png?size=48
-            SLACK_MESSAGE: 'IZE installation in Ubuntu failed'
-            SLACK_TITLE: Post Title
-            SLACK_USERNAME: ize
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_CHANNEL: core-tools
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'IZE installation in Ubuntu failed'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: ize
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
