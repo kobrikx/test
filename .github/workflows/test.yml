@@ -1,0 +1,100 @@
+name: "Test tests"
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_REGION: us-east-1
+  ENV: ${{ github.event.inputs.env }}
+  COUNT: 4
+  EMAIL_RESULTS: "kobrikx@gmail.com"
+  MINI_BOT_ID: "test"
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      DRIVER_HUB:
+        type: choice
+        options:
+          - https://${module.selenium_hub.r53_lb_dns_name}:4444
+          - https://${module.selenium_hub.r53_lb_dns_name}:4444
+          - https://${module.selenium_hub.r53_lb_dns_name}:4444
+          - https://${module.selenium_hub.r53_lb_dns_name}:4444
+        required: true
+        default: 'https://${module.selenium_hub.r53_lb_dns_name}:4444'
+        description: 'Please choose region'
+
+jobs:
+  run50:
+    name: run50
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+    timeout-minutes: 60
+    steps:
+      - name:
+        uses: dedene/curl@v1
+        with:
+        #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
+          url: https://ya.ru
+          args: -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"count":50,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+
+      - name: Get Curl Output
+        run: echo $GITHUB_OUTPUT
+
+  run100:
+    name: run100
+    needs: run50
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+    timeout-minutes: 60
+    steps:
+      - name:
+        uses: dedene/curl@v1
+        with:
+      #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
+          url: https://ya.ru
+          args: -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"count":100,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+
+      - name: Get Curl Output
+        run: echo $GITHUB_OUTPUT
+
+  run200:
+    name: run200
+    needs: run100
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+    timeout-minutes: 60
+    steps:
+      - name: run curl
+        uses: dedene/curl@v1
+        with:
+        #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
+          url: https://ya.ru
+          args: -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"count":200,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+
+
+  run300:
+    name: run300
+    needs: run200
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+    timeout-minutes: 60
+    steps:
+      - name: run curl
+        uses: dedene/curl@v1
+        with:
+        #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
+          url: https://ya.ru
+          args: -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"count":300,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+
+      - name: Get Curl Output
+        run: echo $GITHUB_OUTPUT
