@@ -1,4 +1,4 @@
-name: "Test tests"
+name: "Test2 tests2"
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
@@ -59,7 +59,7 @@ jobs:
 
           # Request timeout (millisec)
           # Default: 1000
-          timeout: 1000
+          timeout: 10000
 
           # The authentication using token
           # This will override the Authorization header, for example Authorization: Bearer QWxhZGRpbjpPcGVuU2VzYW1l
