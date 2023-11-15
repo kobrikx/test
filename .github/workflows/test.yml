@@ -38,18 +38,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: get curl
-        uses: dedene/curl@v1
-        with:
-        #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
-          args: |
+        run: |
+                curl \
                 -v -H "Accept: application/json" \
                 -H "Content-Type: application/json" \
                 -X POST \
                 -d '{"count":50,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}' \
                 https://ya.ru
-
-      - name: Get Curl Output
-        run: echo $GITHUB_OUTPUT
 
   run100:
     name: run100
