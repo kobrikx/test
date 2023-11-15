@@ -10,7 +10,7 @@ defaults:
 env:
   AWS_REGION: us-east-1
   ENV: ${{ github.event.inputs.env }}
-  COUNT: 4
+  API_URL: https://a6b3-109-106-140-142.ngrok-free.app/perftest
   EMAIL_RESULTS: "kobrikx@gmail.com"
   MINI_BOT_ID: "test"
 
@@ -41,7 +41,7 @@ jobs:
         with:
           # The target URL
           # Required: true if custom-config is not set
-          url: https://ya.ru
+          url: ${{ env.API_URL }}
 
           # The request method, basically it's one of GET|POST|PUT|PATCH
           # Default is GET
@@ -52,6 +52,9 @@ jobs:
           # In this case if the response status code is not one of 200, 201 and 204, the job will be failed
           # Default is 200,201,204
           accept: 200,201,204
+
+
+          headers: '{ "Content-Type": "application/json" }'
 
           # Body request
           # Apply only to POST|PUT request
@@ -88,7 +91,7 @@ jobs:
         with:
           # The target URL
           # Required: true if custom-config is not set
-          url: https://ya.ru
+          url: ${{ env.API_URL }}
 
           # The request method, basically it's one of GET|POST|PUT|PATCH
           # Default is GET
@@ -99,6 +102,8 @@ jobs:
           # In this case if the response status code is not one of 200, 201 and 204, the job will be failed
           # Default is 200,201,204
           accept: 200,201,204
+
+          headers: '{ "Content-Type": "application/json" }'
 
           # Body request
           # Apply only to POST|PUT request
