@@ -45,7 +45,8 @@ jobs:
                 -v -H "Accept: application/json" \
                 -H "Content-Type: application/json" \
                 -X POST \
-                -d '{"count":50,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+                -d '{"count":50,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}' \
+                https://ya.ru
 
       - name: Get Curl Output
         run: echo $GITHUB_OUTPUT
@@ -62,12 +63,12 @@ jobs:
         uses: dedene/curl@v1
         with:
       #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
-          url: https://ya.ru
           args: |
             -v -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -X POST \
-            -d '{"count":100,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+            -d '{"count":100,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}' \
+            https://ya.ru
 
       - name: Get Curl Output
         run: echo $GITHUB_OUTPUT
@@ -84,12 +85,13 @@ jobs:
         uses: dedene/curl@v1
         with:
         #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
-          url: https://ya.ru
           args: |
             -v -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -X POST \
-            -d '{"count":200,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+            -d '{"count":200,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}' \
+            https://ya.ru
+
   run300:
     name: run300
     needs: run200
@@ -102,12 +104,12 @@ jobs:
         uses: dedene/curl@v1
         with:
         #      url: https://api.${{ env.ENV }}.botit.live/bot/minibot
-          url: https://ya.ru
           args: |
             -v -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -X POST \
-            -d '{"count":300,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}'
+            -d '{"count":300,"emailResults":"${{ env.EMAIL_RESULTS }}","driverHub":"${{ github.event.inputs.DRIVER_HUB }}","miniBotID":"${{ env.MINI_BOT_ID }}"}' \
+            https://ya.ru
 
       - name: Get Curl Output
         run: echo $GITHUB_OUTPUT
