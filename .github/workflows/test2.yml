@@ -79,6 +79,7 @@ jobs:
 
   test100:
     name: "Test 100"
+    needs: test50
     runs-on: ubuntu-latest
     steps:
       - name: "Call 50"
