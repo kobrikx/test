@@ -9,7 +9,7 @@ defaults:
 
 env:
   ENV: ${{ github.event.inputs.env }}
-  API_URL: https://bf63-35-180-56-28.ngrok-free.app/perftest
+  API_URL: https://38dc-35-180-56-28.ngrok-free.app/perftest
   EMAIL_RESULTS: "kobrikx@gmail.com"
   MINI_BOT_ID: "test"
 
