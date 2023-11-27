@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: "Test ${{ matrix.amount }}"
-        id: ${{ matrix.amount }}
+        id: bot
         uses: indiesdev/curl@v1.1
         with:
           # The target URL
@@ -78,4 +78,4 @@ jobs:
           retries: 1
 
       - name: "Use response"
-        run: echo ${{ steps.${{ matrix.amount }}.outputs.response }}
+        run: echo ${{ steps.bot.outputs.response }}
