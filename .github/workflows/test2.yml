@@ -19,10 +19,10 @@ on:
       DRIVER_HUB:
         type: choice
         options:
-          - https://${module.selenium_hub.r53_lb_dns_name}:4444
-          - https://${module.selenium_hub.r53_lb_dns_name}:4444
-          - https://${module.selenium_hub.r53_lb_dns_name}:4444
-          - https://${module.selenium_hub.r53_lb_dns_name}:4444
+          - "region1": "https://${module.selenium_hub.r53_lb_dns_name}:4444"
+          - "region2": "https://${module.selenium_hub.r53_lb_dns_name}:4444"
+          - "region3": "https://${module.selenium_hub.r53_lb_dns_name}:4444"
+          - "region4": "https://${module.selenium_hub.r53_lb_dns_name}:4444"
         required: true
         default: 'https://${module.selenium_hub.r53_lb_dns_name}:4444'
         description: 'Please choose region'
