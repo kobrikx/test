@@ -79,4 +79,5 @@ jobs:
           retries: 1
 
       - name: "Use response"
+        continue-on-error: true
         run: echo ${{ steps.bot.outputs.response }}
