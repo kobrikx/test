@@ -6,7 +6,8 @@ env:
   EC2_INSTANCE_TYPE: t3.nano
   VPC_SUBNET_ID: subnet-07e97fb694c5aa855
   SG_ID: sg-0c925468749d05b00
-
+  API_URL: test.k6.io
+  
 on:
   workflow_dispatch:
 
