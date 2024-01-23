@@ -33,7 +33,9 @@ jobs:
           ec2-image-id: ${{ env.EC2_IMAGE_ID }}
           pre-runner-script: |
             sudo yum update -y && \
-            sudo yum install docker git libicu -y \
+            sudo yum install docker -y && \
+            sudo yum install git -y && \
+            sudo yum install libicu -y && \
             sudo systemctl enable docker
           ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
           subnet-id: ${{ env.VPC_SUBNET_ID }}
