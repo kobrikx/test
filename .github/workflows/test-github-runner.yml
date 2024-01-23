@@ -2,7 +2,7 @@ name: github-runner-test
 
 env:
   AWS_REGION: us-east-1
-  EC2_IMAGE_ID: ami-07bdb09c49774f92e
+  EC2_IMAGE_ID: ami-0a3c3a20c09d6f377
   EC2_INSTANCE_TYPE: t3.nano
   VPC_SUBNET_ID: subnet-07e97fb694c5aa855
   SG_ID: sg-0c925468749d05b00
