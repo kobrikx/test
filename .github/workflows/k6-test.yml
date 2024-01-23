@@ -1,0 +1,21 @@
+name: Main Workflow
+on:
+  workflow_dispatch:
+
+  env:
+    AWS_REGION: us-east-1
+    ENV: dev
+    API_URL: test.k6.io
+
+jobs:
+  build:
+    name: Run k6 test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run k6 local test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: ./apps/squibby/perftest/squibby-perftest.js
+#          flags: --vus 5 --duration 60s

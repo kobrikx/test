@@ -1,0 +1,78 @@
+name: do-the-job
+on:
+workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  EC2_IMAGE_ID: ami-07bdb09c49774f92e
+  EC2_INSTANCE_TYPE: t3.nano
+  VPC_SUBNET_ID: subnet-07e97fb694c5aa855
+  SG_ID: sg-0c925468749d05b00
+
+jobs:
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          ec2-image-id: ${{ env.EC2_IMAGE_ID }}
+          pre-runner-script: |
+            sudo yum update -y && \
+            sudo yum install docker git libicu -y \
+            sudo systemctl enable docker
+          ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
+          subnet-id: ${{ env.VPC_SUBNET_ID }}
+          security-group-id: ${{ env.SG_ID }}
+#          iam-role-name: my-role-name # optional, requires additional permissions
+#          aws-resource-tags: > # optional, requires additional permissions
+#            [
+#              {"Key": "Name", "Value": "ec2-github-runner"},
+#              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+#            ]
+  k6-testing:
+    name: Do the job on the runner
+    needs: start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run k6 local test
+        uses: grafana/k6-action@v0.3.1
+        env:
+        with:
+          filename: ./apps/squibby/perftest/squibby-perftest.js
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - do-the-job # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
