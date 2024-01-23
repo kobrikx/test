@@ -8,8 +8,7 @@ env:
   SG_ID: sg-0c925468749d05b00
 
 on:
-workflow_dispatch:
-
+  workflow_dispatch:
 
 jobs:
   start-runner:
