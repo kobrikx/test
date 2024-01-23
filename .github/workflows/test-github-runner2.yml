@@ -19,7 +19,7 @@ on:
       VPC_SUBNET_ID:
         type: string
         required: true
-        description: 'Please input EC2 Instance type'
+        description: 'Please input VPC subnet ID'
       SG_ID:
         type: string
         required: true
