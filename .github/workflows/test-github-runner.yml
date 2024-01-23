@@ -33,10 +33,11 @@ jobs:
           ec2-image-id: ${{ env.EC2_IMAGE_ID }}
           pre-runner-script: |
             sudo yum update -y && \
-            sudo yum install docker -y && \
-            sudo yum install git -y && \
-            sudo yum install libicu -y && \
-            sudo systemctl enable docker
+            sudo yum install -y docker && \
+            sudo yum install -y git  && \
+            sudo yum install -y libicu  && \
+            sudo service docker start && \
+            sudo usermod -a -G docker ec2-user
           ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
           subnet-id: ${{ env.VPC_SUBNET_ID }}
           security-group-id: ${{ env.SG_ID }}
