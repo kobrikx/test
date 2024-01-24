@@ -29,9 +29,9 @@ jobs:
         uses: grafana/k6-action@v0.3.1
         with:
           filename: ./apps/squibby/perftest/squibby-perftest.js
-          env:
-            API_URL: ${{ github.event.inputs.API_URL }}
           flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=results.json
+        env:
+          API_URL: ${{ github.event.inputs.API_URL }}
 
       - name: Upload performance test results
         uses: actions/upload-artifact@v3
