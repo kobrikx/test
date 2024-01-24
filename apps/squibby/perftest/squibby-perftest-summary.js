@@ -4,9 +4,9 @@ import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 export const options = {
     // A number specifying the number of VUs to run concurrently.
-    vus: ${__ENV.VIRTUAL_USERS},
+    vus: 5,
     // A string specifying the total duration of the test run.
-    duration: ${__ENV.DURATION},
+    duration: '60s',
     thresholds: {
         http_req_failed: ['rate<0.01'], // http errors should be less than 1%
         http_req_duration: ['p(95)<500'], // 95 percent of response times must be below 500ms
@@ -32,3 +32,4 @@ export function handleSummary(data) {
         'summary.json': JSON.stringify(data), // and a JSON with all the details...
     };
 }
+
