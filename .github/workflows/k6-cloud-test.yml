@@ -1,8 +1,5 @@
 name: "k6 github action k6 cloud test"
 
-env:
-    AWS_REGION: us-east-1
-
 on:
   workflow_dispatch:
     inputs:
@@ -11,6 +8,16 @@ on:
         required: true
         default: 'test.k6.io'
         description: 'Please input URL to test'
+      VIRTUAL_USERS:
+        type: number
+        required: true
+        default: 5
+        description: 'Please input amount of Virtual Users to test'
+      DURATION:
+        type: string
+        required: true
+        default: '60s'
+        description: 'Please input time of testing'
 jobs:
   build:
     name: Run k6 test
@@ -22,6 +29,8 @@ jobs:
         uses: grafana/k6-action@v0.3.1
         with:
           filename: ./apps/squibby/perftest/squibby-perftest.js
-          flags: --env API_URL=${{ github.event.inputs.API_URL }}
+          env:
+            API_URL: ${{ github.event.inputs.API_URL }}
+          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }}
           cloud: true
           token: ${{ secrets.K6_CLOUD_API_TOKEN }}
