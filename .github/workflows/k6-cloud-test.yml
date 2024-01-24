@@ -31,6 +31,12 @@ jobs:
           filename: ./apps/squibby/perftest/squibby-perftest.js
           env:
             API_URL: ${{ github.event.inputs.API_URL }}
-          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }}
+          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=results.json
           cloud: true
           token: ${{ secrets.K6_CLOUD_API_TOKEN }}
+
+      - name: Upload performance test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6-report
+          path: results.json
