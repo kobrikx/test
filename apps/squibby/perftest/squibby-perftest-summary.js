@@ -4,9 +4,9 @@ import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 export const options = {
     // A number specifying the number of VUs to run concurrently.
-    vus: 5,
+    vus: ${__ENV.VIRTUAL_USERS},
     // A string specifying the total duration of the test run.
-    duration: '60s',
+    duration: ${__ENV.DURATION},
     thresholds: {
         http_req_failed: ['rate<0.01'], // http errors should be less than 1%
         http_req_duration: ['p(95)<500'], // 95 percent of response times must be below 500ms
