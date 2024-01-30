@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: k6-report
-          path: summary.json
+          path: summary.html
 
   ### Run k6 test in the Grafana Cloud
   cloud-runner:
@@ -72,7 +72,7 @@ jobs:
       - name: Run k6 cloud test
         uses: grafana/k6-action@v0.3.1
         with:
-          filename: ./apps/squibby/perftest/squibby-perftest-summary.js
+          filename: ./apps/squibby/perftest/squibby-perftest.js
           flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }}
           cloud: true
           token: ${{ secrets.K6_CLOUD_API_TOKEN }}
