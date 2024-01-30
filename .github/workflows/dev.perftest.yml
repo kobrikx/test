@@ -51,8 +51,8 @@ jobs:
       - name: Run k6 local test
         uses: grafana/k6-action@v0.3.1
         with:
-          filename: ./apps/squibby/perftest/squibby-perftest-summary.js
-          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=summary.json
+          filename: ./apps/squibby/perftest/search.js
+          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=summary.html
         env:
           API_URL: ${{ github.event.inputs.API_URL }}
 
@@ -72,7 +72,7 @@ jobs:
       - name: Run k6 cloud test
         uses: grafana/k6-action@v0.3.1
         with:
-          filename: ./apps/squibby/perftest/squibby-perftest.js
+          filename: ./apps/squibby/perftest/search.js
           flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }}
           cloud: true
           token: ${{ secrets.K6_CLOUD_API_TOKEN }}
@@ -126,8 +126,8 @@ jobs:
       - name: Run k6 local test
         uses: grafana/k6-action@v0.3.1
         with:
-          filename: ./apps/squibby/perftest/squibby-perftest-summary.js
-          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=summary.json
+          filename: ./apps/squibby/perftest/search.js
+          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }} --out json=summary.html
         env:
           API_URL: ${{ github.event.inputs.API_URL }}
       - name: Upload performance test results

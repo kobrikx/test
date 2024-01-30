@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
 export const options = {
   // A number specifying the number of VUs to run concurrently.
@@ -58,4 +59,10 @@ export const options = {
 export default function() {
   http.get(`https://${__ENV.API_URL}/`);
   sleep(1);
+}
+
+export function handleSummary(data) {
+  return {
+    "summary.html": htmlReport(data),
+  };
 }
