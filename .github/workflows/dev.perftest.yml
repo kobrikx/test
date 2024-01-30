@@ -73,7 +73,7 @@ jobs:
         uses: grafana/k6-action@v0.3.1
         with:
           filename: ./apps/squibby/perftest/squibby-perftest.js
-          flags: --vus ${{ env.VIRTUAL_USERS }} --duration ${{ env.DURATION }}
+          flags: --vus ${{ github.event.inputs.VIRTUAL_USERS }} --duration ${{ github.event.inputs.DURATION }}
           cloud: true
           token: ${{ secrets.K6_CLOUD_API_TOKEN }}
         env:
