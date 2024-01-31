@@ -62,7 +62,7 @@ jobs:
           ec2-instance-type: ${{ github.event.inputs.EC2_INSTANCE_TYPE }}
           subnet-id: ${{ github.event.inputs.VPC_SUBNET_ID }}
           security-group-id: ${{ github.event.inputs.SG_ID }}
-          iam-role-name: dev-k6-ec2-instance
+          iam-role-name: k6-github-ec2-instance
 #          aws-resource-tags: > # optional, requires additional permissions
 #            [
 #              {"Key": "Name", "Value": "ec2-github-runner"},
