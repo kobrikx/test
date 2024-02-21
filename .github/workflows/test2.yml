@@ -36,8 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: "${{ github.sha }}"
-      TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}
-      TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
+      TF_VAR_rds_api_db_snapshot_identifier: "${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}"
+      TF_VAR_ibm_replica_db_snapshot_identifier: "${{ env.RDS_API_DB_SNAPSHOT_ID }}"
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -68,6 +68,8 @@ jobs:
         run: ize gen aws-profile
 
       - name: Deploy Infra
+        env:
+          TEST_TEST: ${{ env.SSH_PUBLIC_KEY }}
         run: |
           export
           echo $TF_VAR_ibm_replica_db_snapshot_identifier
