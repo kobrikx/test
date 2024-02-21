@@ -25,12 +25,12 @@ on:
         type: string
         required: true
         default: 'null'
-        description: 'Please enter the IBM_REPLICA database snapshot ID if it is necessary to restore'
+        description: 'IBM_REPLICA DB snapshot ID if it is necessary to restore(WILL OVERWRITE CURRENT DB)'
       rds_api_db_snapshot_id:
         type: string
         required: true
         default: 'null'
-        description: 'Please enter the RDS_API database snapshot ID if it is necessary to restore'
+        description: 'RDS_API DB snapshot ID if it is necessary to restore(WILL OVERWRITE CURRENT DB)'
 jobs:
   infra: # Create infrastructure for services on push to Develop branch
     runs-on: ubuntu-latest
