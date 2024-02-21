@@ -25,18 +25,19 @@ on:
         type: string
         required: true
         default: 'null'
-        description: 'Please enter the snapshot ID if it is necessary to restore the database'
+        description: 'Please enter the IBM_REPLICA database snapshot ID if it is necessary to restore'
       rds_api_db_snapshot_identifier:
         type: string
         required: true
         default: 'null'
-        description: 'Please enter the snapshot ID if it is necessary to restore the database'
+        description: 'Please enter the RDS_API database snapshot ID if it is necessary to restore'
 jobs:
   infra: # Create infrastructure for services on push to Develop branch
     runs-on: ubuntu-latest
     env:
       TAG: "${{ github.sha }}"
-
+      TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_IDENTIFIER }}
+      TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_IDENTIFIER }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
