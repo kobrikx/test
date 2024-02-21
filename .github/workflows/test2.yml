@@ -16,17 +16,17 @@ env:
   IZE_PLAIN_TEXT: true
   IZE_VERSION: 1.1.10
   NODE_OPTIONS: --max_old_space_size=6144
-  IBM_REPLICA_DB_SNAPSHOT_IDENTIFIER: ${{ github.event.inputs.ibm_replica_db_snapshot_identifier }}
-  RDS_API_DB_SNAPSHOT_IDENTIFIER: ${{ github.event.inputs.rds_api_db_snapshot_identifier }}
+  IBM_REPLICA_DB_SNAPSHOT_ID: ${{ github.event.inputs.ibm_replica_db_snapshot_id }}
+  RDS_API_DB_SNAPSHOT_ID: ${{ github.event.inputs.rds_api_db_snapshot_id }}
 on:
   workflow_dispatch:
     inputs:
-      ibm_replica_db_snapshot_identifier:
+      ibm_replica_db_snapshot_id:
         type: string
         required: true
         default: 'null'
         description: 'Please enter the IBM_REPLICA database snapshot ID if it is necessary to restore'
-      rds_api_db_snapshot_identifier:
+      rds_api_db_snapshot_id:
         type: string
         required: true
         default: 'null'
@@ -36,8 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: "${{ github.sha }}"
-      TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_IDENTIFIER }}
-      TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_IDENTIFIER }}
+      TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID}}
+      TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
