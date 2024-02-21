@@ -68,7 +68,6 @@ jobs:
 
       - name: Deploy Infra
         env:
-          TEST_TEST: ${{ env.SSH_PUBLIC_KEY }}
           TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}
           TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
         run: |
