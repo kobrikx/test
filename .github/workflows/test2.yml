@@ -1,0 +1,73 @@
+name: "[dev02] Infra & Apps Deploy"
+concurrency: # This is needed to ensure only a single job or workflow using the same concurrency group will run at a time.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_REGION: us-east-2
+  ENV: dev02
+  SSH_PUBLIC_KEY: "ssh-rsa 12345"
+  AWS_PROFILE: default
+  IZE_LOG_LEVEL: debug
+  IZE_PLAIN_TEXT: true
+  IZE_VERSION: 1.1.10
+  NODE_OPTIONS: --max_old_space_size=6144
+  IBM_REPLICA_DB_SNAPSHOT_IDENTIFIER: ${{ github.event.inputs.ibm_replica_db_snapshot_identifier }}
+  RDS_API_DB_SNAPSHOT_IDENTIFIER: ${{ github.event.inputs.rds_api_db_snapshot_identifier }}
+on:
+  workflow_dispatch:
+    inputs:
+      ibm_replica_db_snapshot_identifier:
+        type: string
+        required: true
+        default: 'null'
+        description: 'Please enter the snapshot ID if it is necessary to restore the database'
+      rds_api_db_snapshot_identifier:
+        type: string
+        required: true
+        default: 'null'
+        description: 'Please enter the snapshot ID if it is necessary to restore the database'
+jobs:
+  infra: # Create infrastructure for services on push to Develop branch
+    runs-on: ubuntu-latest
+    env:
+      TAG: "${{ github.sha }}"
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ env.SSH_PUBLIC_KEY }}
+          name: id_rsa.pub
+          known_hosts: unnecessary
+          if_key_exists: replace
+
+      - name: ize setup
+        uses: hazelops/action-setup-ize@0.0.1
+        with:
+          version: ${{ env.IZE_VERSION }}
+
+      - name: Create AWS Profile
+        run: ize gen aws-profile
+
+      - name: Deploy Infra
+        run: |
+          echo $TF_VAR_ibm_replica_db_snapshot_identifier
+          echo $TF_VAR_rds_api_db_snapshot_identifier
+          ize up infra
