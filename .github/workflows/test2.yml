@@ -14,23 +14,23 @@ env:
   AWS_PROFILE: default
   IZE_LOG_LEVEL: debug
   IZE_PLAIN_TEXT: true
-  IZE_VERSION: 1.1.10
+  IZE_VERSION: 1.1.12
   NODE_OPTIONS: --max_old_space_size=6144
-  IBM_REPLICA_DB_SNAPSHOT_ID: ${{ github.event.inputs.ibm_replica_db_snapshot_id }}
-  RDS_API_DB_SNAPSHOT_ID: ${{ github.event.inputs.rds_api_db_snapshot_id }}
+#  IBM_REPLICA_DB_SNAPSHOT_ID: ${{ github.event.inputs.ibm_replica_db_snapshot_id }}
+#  RDS_API_DB_SNAPSHOT_ID: ${{ github.event.inputs.rds_api_db_snapshot_id }}
 on:
   workflow_dispatch:
-    inputs:
-      ibm_replica_db_snapshot_id:
-        type: string
-        required: true
-        default: 'null'
-        description: 'IBM_REPLICA DB snapshot ID if it is necessary to restore(WILL OVERWRITE CURRENT DB)'
-      rds_api_db_snapshot_id:
-        type: string
-        required: true
-        default: 'null'
-        description: 'RDS_API DB snapshot ID if it is necessary to restore(WILL OVERWRITE CURRENT DB)'
+#    inputs:
+#      ibm_replica_db_snapshot_id:
+#        type: string
+#        required: true
+#        default: 'null'
+#        description: 'IBM_REPLICA DB snapshot ID if it is necessary to restore (WILL OVERWRITE CURRENT DB)'
+#      rds_api_db_snapshot_id:
+#        type: string
+#        required: true
+#        default: 'null'
+#        description: 'RDS_API DB snapshot ID if it is necessary to restore (WILL OVERWRITE CURRENT DB)'
 jobs:
   infra: # Create infrastructure for services on push to Develop branch
     runs-on: ubuntu-latest
@@ -59,19 +59,16 @@ jobs:
           if_key_exists: replace
 
       - name: ize setup
-        uses: hazelops/action-setup-ize@0.0.1
+        uses: hazelops/action-setup-ize@v0.3.0-alpha
         with:
           version: ${{ env.IZE_VERSION }}
 
-      - name: Create AWS Profile
-        run: ize gen aws-profile
+#      - name: Create AWS Profile
+#        run: ize gen aws-profile
 
       - name: Deploy Infra
-        env:
-          TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}
-          TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
+#        env:
+#          TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}
+#          TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
         run: |
-          export
-          echo $TF_VAR_ibm_replica_db_snapshot_identifier
-          echo $TF_VAR_rds_api_db_snapshot_identifier
-          ize up infra
+          ize --version
