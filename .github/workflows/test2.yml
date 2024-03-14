@@ -31,44 +31,51 @@ on:
 #        required: true
 #        default: 'null'
 #        description: 'RDS_API DB snapshot ID if it is necessary to restore (WILL OVERWRITE CURRENT DB)'
-jobs:
-  infra: # Create infrastructure for services on push to Develop branch
-    runs-on: ubuntu-latest
-    env:
-      TAG: "${{ github.sha }}"
 
+  build-node_modules-lambda-layer:
+    name: test upload
+    runs-on: ubuntu-latest
     steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: create test files
+        run: |
+          mkdir testfiles
+          cd testfiles
+          touch test1.txt
+          touch test2.txt
+          touch test3.txt
+          touch test4.txt
+          touch test5.txt
+          ls -la ./testfiles
+      - name: Upload files
+        uses: actions/upload-artifact@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
+          name: test
+          path: testfiles
+          overwrite: true
+
+
+  test-download:
+    runs-on: ubuntu-latest
+    name: test download
+    env:
+      TAG: '${{ github.sha }}'
+    needs: [test upload]
+    steps:
 
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - uses: actions/download-artifact@v4
         with:
-          key: ${{ env.SSH_PUBLIC_KEY }}
-          name: id_rsa.pub
-          known_hosts: unnecessary
-          if_key_exists: replace
+          name: test
+          path: ./testfiles2
 
-      - name: ize setup
-        uses: hazelops/action-setup-ize@v0.3.0-alpha
-        with:
-          version: ${{ env.IZE_VERSION }}
-
-#      - name: Create AWS Profile
-#        run: ize gen aws-profile
-
-      - name: Deploy Infra
-#        env:
-#          TF_VAR_rds_api_db_snapshot_identifier: ${{ env.IBM_REPLICA_DB_SNAPSHOT_ID }}
-#          TF_VAR_ibm_replica_db_snapshot_identifier: ${{ env.RDS_API_DB_SNAPSHOT_ID }}
+      - name: check what's downloaded
         run: |
-          ize --version
+          cd testfiles2
+          ls -la ./
