@@ -16,7 +16,7 @@ on:
 
 
   test_upload:
-    name: test upload
+    name: infra
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -45,7 +45,7 @@ on:
     name: test download
     env:
       TAG: '${{ github.sha }}'
-    needs: [test upload]
+    needs: infra
     steps:
 
       - name: Checkout Code
