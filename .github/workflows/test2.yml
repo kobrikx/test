@@ -31,7 +31,7 @@ jobs:
           touch test3.txt
           touch test4.txt
           touch test5.txt
-          ls -la ./testfiles
+          ls -la ./
       - name: Upload files
         uses: actions/upload-artifact@v4
         with:
