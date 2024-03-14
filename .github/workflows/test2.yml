@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 
-  test_upload:
+  infra:
     name: infra
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +40,7 @@ on:
           overwrite: true
 
 
-  test_download:
+  download:
     runs-on: ubuntu-latest
     name: test download
     env:
