@@ -14,7 +14,7 @@ env:
 on:
   workflow_dispatch:
 
-
+jobs:
   infra:
     name: infra
     runs-on: ubuntu-latest
