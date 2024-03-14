@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 
-  build-node_modules-lambda-layer:
+  test_upload:
     name: test upload
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +40,7 @@ on:
           overwrite: true
 
 
-  test-download:
+  test_download:
     runs-on: ubuntu-latest
     name: test download
     env:
