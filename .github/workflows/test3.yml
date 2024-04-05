@@ -33,7 +33,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
         env:
 #          AWS_PROFILE: null
-           AWS_EC2_METADATA_DISABLED: true
+           AWS_EC2_METADATA_DISABLED: false
 
       - name: Checkout Code
         uses: actions/checkout@v4
