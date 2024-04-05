@@ -1,7 +1,7 @@
 name: "k6 github aws hosted runner test"
 
 env:
-  AWS_REGION: us-east-1
+  AWS_REGION: us-east-2
   
 on:
   workflow_dispatch:
