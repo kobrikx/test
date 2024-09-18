@@ -97,7 +97,6 @@ jobs:
           fail_on_error: "true"
           filter_mode: "nofilter"
           flags: "--module"
-#          level: "error"
 
   yaml_linter:
     name: Apps Yaml Linter

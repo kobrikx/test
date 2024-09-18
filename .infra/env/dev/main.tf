@@ -1,4 +1,4 @@
-resource "aws_key_pair" 'root' {
+resource "aws_key_pair" "root" {
   key_name   = var.ec2_key_pair_name
   public_key = var.ssh_public_key
 
@@ -12,7 +12,7 @@ module "vpc" {
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
-  name = '${var.env}-vpc'
+  name = "${var.env}-vpc"
   cidr = "10.30.0.0/16"
 
   azs = [
