@@ -56,23 +56,6 @@ jobs:
         with:
           prefix: '🏷️ Terraform:'
 
-  infra_changes: # Get changes in the monorepo
-    name: Detect Infra Repo Changes
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
-    # Set job outputs to values from filter step
-    outputs:
-      infra: ${{ steps.filter.outputs.infra }}
-    steps:
-      - uses: actions/checkout@v4
-      # For pull requests it's not necessary to checkout the code
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          # Filters stored in own yaml file
-          filters: '.github/filters.yml'
-
   # Perform tests on pull requests
   terraform_linter:
     name: Infra Terraform Linter
@@ -109,8 +92,8 @@ jobs:
       - name: Create AWS profile
         run: ize gen aws-profile
 
-      - name: Create Terraform environment
-        run: ize gen tfenv
+#      - name: Create Terraform environment
+#        run: ize gen tfenv
 
       - name: Terraform init
         run: ize terraform init
