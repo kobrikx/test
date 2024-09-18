@@ -89,10 +89,10 @@ jobs:
         with:
           submodules: true
 
-#      - name: Ize Setup
-#        uses: hazelops/action-setup-ize@1.0.1
-#        with:
-#          version: ${{ env.IZE_VERSION }}
+      - name: Ize Setup
+        uses: hazelops/action-setup-ize@1.0.1
+        with:
+          version: ${{ env.IZE_VERSION }}
 #
 #      - name: Create AWS Profile
 #        run: |
