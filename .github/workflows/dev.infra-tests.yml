@@ -95,7 +95,7 @@ jobs:
           reporter: github-pr-review
           fail_on_error: "true"
           filter_mode: "nofilter"
-          flags: "--module"
+#          flags: "--module"
 
   yaml_linter:
     name: Apps Yaml Linter
