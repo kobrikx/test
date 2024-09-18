@@ -3,12 +3,13 @@ defaults:
   run:
     shell: bash
 env:
-  AWS_REGION: us-east-1
   ENV: dev
   SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwxmgt3sp18q+4GQ0t29jYDma3IUfXwKXDqSqMdv7KoPUVCwx/Hhy7VlMUN+B+s5LlPSrdlmUphCaU9gPoFw7dvIkGGBPxlUJs8Neny0V6U8fHsAxOqExAS0zFaQZehUbOCwR/W5BtfR11nhpMmzNbBDSiCEW2i4eLausSAJCTY8FhR/Z+5j6RJt/saS8eHOhOprsrPUAzlxm7cI9uWgr2XnTXwOk8ImbXNMIas6HY7EMyKknOvRdvuTffuo3uoSbW0jElruCo4FXMG9alm68Umoz0GYp1nWJdtN32df9yxKgEfN/fXbt9bb1KjSMIPND3HT//YUIGv34OoQ5U/oZlEKILVw21R9joeA99c23PQenqCxMVgxtPouOmJW4saN/L1RsW7Pa+ZonyEGRtnE+LO+CxNfypA9kYP91hNGjXUgtM7aAiM/wBxPPuDKRtEnESZmzG/gJnGGdhmemHcbw8VR2WhLsRpioo9mpK8w90d+otpSbh9YZVYhxHuFPr47s= dev-nopk"
   IZE_LOG_LEVEL: debug
   IZE_PLAIN_TEXT: true
   IZE_VERSION: 1.1.12
+  AWS_PROFILE: default
+  AWS_REGION: us-east-1
 
 on:
   pull_request:
