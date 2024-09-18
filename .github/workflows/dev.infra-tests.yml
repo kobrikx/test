@@ -173,12 +173,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+#          aws-region: ${{ env.AWS_REGION }}
+#        env:
+#          AWS_PROFILE: # This is required due to a bug https://stackoverflow.com/a/77731682
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -196,60 +198,3 @@ jobs:
             *.md
           reporter: github-pr-review
           filter_mode: "nofilter"
-
-  terraform_plan:
-    name: Create Terraform Plan
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    needs:
-      - infra_changes
-    if: ${{ needs.infra_changes.outputs.infra == 'true' }}
-    env:
-      SHORT_SHA: ${GITHUB_SHA}
-      GITHUB_ACTOR: ${GITHUB_ACTOR}
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Checkout Code for Commit Message
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Get Commit Message
-        run: |
-          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
-          echo "COMMIT_MESSAGE=${MSG}" >> $GITHUB_ENV
-
-      - name: Checkout Code for Infra Plan
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Create AWS Profile
-        run: make aws.profile
-
-      - name: Infra Plan
-        run: make terraform.plan
-        shell: bash
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: results
-          path: .infra/env/${{ env.ENV }}/.terraform/tfplan.md
-          overwrite: true
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: results
-      - name: comment PR
-        uses: machine-learning-apps/pr-comment@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          path: results/tfplan.md
