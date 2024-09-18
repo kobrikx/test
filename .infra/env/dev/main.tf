@@ -26,6 +26,8 @@ module "vpc" {
     "10.30.14.0/23"
   ]
 
+
+
   private_subnets = [
     "10.30.20.0/23",
     "10.30.22.0/23",
@@ -53,6 +55,8 @@ resource "aws_security_group" "default_permissive" {
   name        = "${var.env}-default-permissive"
   vpc_id      = module.vpc.vpc_id
   description = "Managed by Terraform"
+
+
 
   ingress {
     protocol    = -1

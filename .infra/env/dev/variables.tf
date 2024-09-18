@@ -22,6 +22,8 @@ variable "ec2_key_pair_name" {
   default = "dev-nutcorp"
 }
 
+
+
 variable "nat_gateway_enabled" {
   default = true
   description = "Set it to true to enable NAT Gateway, otherwise nat-instance module will be used"
