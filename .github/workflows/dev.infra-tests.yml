@@ -84,6 +84,9 @@ jobs:
       - name: Create AWS profile
         run: ize gen aws-profile
 
+      - name: Create Terraform environment
+        run: ize gen tfenv
+
       - name: Terraform init
         run: ize terraform init
 
@@ -96,7 +99,7 @@ jobs:
           reporter: github-pr-review
           fail_on_error: "true"
           filter_mode: "nofilter"
-#          flags: "--module"
+          flags: "--module"
 
   yaml_linter:
     name: Apps Yaml Linter
