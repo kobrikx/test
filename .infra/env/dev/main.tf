@@ -26,7 +26,7 @@ module "vpc" {
     "10.30.14.0/23"
   ]
 
-
+test = "test"
 
   private_subnets = [
     "10.30.20.0/23",
