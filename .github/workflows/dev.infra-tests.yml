@@ -92,7 +92,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           working_directory: ".infra/env/${{ env.ENV }}"
-          tflint_version: "v0.50.0"
+          tflint_version: "v0.49.0"  # Version set due to this https://github.com/reviewdog/action-tflint/issues/83
           reporter: github-pr-review
           fail_on_error: "true"
           filter_mode: "nofilter"
