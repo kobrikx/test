@@ -8,7 +8,6 @@ env:
   IZE_LOG_LEVEL: debug
   IZE_PLAIN_TEXT: true
   IZE_VERSION: 1.1.12
-  AWS_PROFILE: default
   AWS_REGION: us-east-1
 
 
