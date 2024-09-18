@@ -40,8 +40,7 @@ module "vpc" {
   //  single_nat_gateway = var.env == "prod" ? false : true
   single_nat_gateway = true
   enable_vpn_gateway = false
-  test_error
-  enable_dns_hostnames       = true
+  enable_dns_hostnames       = 500
   enable_dns_support         = true
   manage_default_network_acl = true
   default_network_acl_name   = "${var.env}-${var.namespace}"
