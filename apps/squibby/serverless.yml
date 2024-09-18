@@ -19,7 +19,7 @@ provider:
         - "logs:PutLogEvents"
       Resource:
         - "arn:aws:logs:*:*:log-group:/aws/lambda-insights:*"
-test
+
 functions:
   get_rate:
     handler: handler.endpoint
@@ -43,3 +43,4 @@ custom:
     basePath: ${self:provider.stage}
     stage: ${self:provider.stage}
     createRoute53Record: true
+    test
