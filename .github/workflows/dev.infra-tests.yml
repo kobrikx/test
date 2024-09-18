@@ -89,19 +89,27 @@ jobs:
         with:
           submodules: true
 
-      - name: Ize Setup
-        uses: hazelops/action-setup-ize@1.0.1
-        with:
-          version: ${{ env.IZE_VERSION }}
+#      - name: Ize Setup
+#        uses: hazelops/action-setup-ize@1.0.1
+#        with:
+#          version: ${{ env.IZE_VERSION }}
+#
+#      - name: Create AWS Profile
+#        run: |
+#          ize gen aws-profile
+#          sudo apt install -y tini
+#
+#      - name: Deploy Infra
+#        run: |
+#          exec tini -s -g -- ize terraform init
+      - name: Create AWS profile
+        run: ize gen aws-profile
 
-      - name: Create AWS Profile
-        run: |
-          ize gen aws-profile
-          sudo apt install -y tini
+      - name: Create Terraform environment
+        run: ize gen tfenv
 
-      - name: Deploy Infra
-        run: |
-          exec tini -s -g -- ize terraform init    
+      - name: Terraform init
+        run: ize terraform init
 
       - name: Tflint Report Output
         uses: reviewdog/action-tflint@master
@@ -184,10 +192,6 @@ jobs:
             *.md
           reporter: github-pr-review
           filter_mode: "nofilter"
-
-
-
-
 
   terraform_plan:
     name: Create Terraform Plan
