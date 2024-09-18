@@ -6,10 +6,16 @@ env:
   AWS_REGION: us-east-1
   ENV: dev
   SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwxmgt3sp18q+4GQ0t29jYDma3IUfXwKXDqSqMdv7KoPUVCwx/Hhy7VlMUN+B+s5LlPSrdlmUphCaU9gPoFw7dvIkGGBPxlUJs8Neny0V6U8fHsAxOqExAS0zFaQZehUbOCwR/W5BtfR11nhpMmzNbBDSiCEW2i4eLausSAJCTY8FhR/Z+5j6RJt/saS8eHOhOprsrPUAzlxm7cI9uWgr2XnTXwOk8ImbXNMIas6HY7EMyKknOvRdvuTffuo3uoSbW0jElruCo4FXMG9alm68Umoz0GYp1nWJdtN32df9yxKgEfN/fXbt9bb1KjSMIPND3HT//YUIGv34OoQ5U/oZlEKILVw21R9joeA99c23PQenqCxMVgxtPouOmJW4saN/L1RsW7Pa+ZonyEGRtnE+LO+CxNfypA9kYP91hNGjXUgtM7aAiM/wBxPPuDKRtEnESZmzG/gJnGGdhmemHcbw8VR2WhLsRpioo9mpK8w90d+otpSbh9YZVYhxHuFPr47s= dev-nopk"
-
+  IZE_LOG_LEVEL: debug
+  IZE_PLAIN_TEXT: true
+  IZE_VERSION: 1.1.12
 
 on:
-  - pull_request
+  pull_request:
+#    branches:
+#      - develop
+#    paths:
+#      - '.infra/**'
 
 jobs:
   labeler:
@@ -17,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Label PRs with Service
-        uses: adamzolyak/monorepo-pr-labeler-action@4
+        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_DIRS: 'apps'
@@ -25,7 +31,7 @@ jobs:
           prefix: '🏷️ Service:'
 
       - name: Label PRs with Infra Changes
-        uses: adamzolyak/monorepo-pr-labeler-action@4
+        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_DIRS: '.infra/env'
@@ -33,7 +39,7 @@ jobs:
           prefix: '🏷️ Infra:'
 
       - name: Label PRs with Docs
-        uses: adamzolyak/monorepo-pr-labeler-action@4
+        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_DIRS: '.infra/docs'
@@ -41,7 +47,7 @@ jobs:
           prefix: '🏷️ Docs:'
 
       - name: Label PRs with Internal Terraform
-        uses: adamzolyak/monorepo-pr-labeler-action@4
+        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_DIRS: '.infra/terraform'
@@ -83,11 +89,19 @@ jobs:
         with:
           submodules: true
 
-      - name: Create AWS Profile
-        run: make aws.profile
+      - name: Ize Setup
+        uses: hazelops/action-setup-ize@1.0.1
+        with:
+          version: ${{ env.IZE_VERSION }}
 
-      - name: Terraform Init
-        run: make terraform.init
+      - name: Create AWS Profile
+        run: |
+          ize gen aws-profile
+          sudo apt install -y tini
+
+      - name: Deploy Infra
+        run: |
+          exec tini -s -g -- ize terraform init    
 
       - name: Tflint Report Output
         uses: reviewdog/action-tflint@master
