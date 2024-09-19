@@ -1,2 +1,4 @@
-squibby:
-  - projects/squibby/**/*
+#This file is an example of filter for filtered.yml file.
+#You can read more at: https://github.com/dorny/paths-filter
+infra:
+  - .infra/**/*

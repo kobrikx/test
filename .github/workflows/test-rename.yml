@@ -1,0 +1,63 @@
+name: Fetch version, update file, and rename
+
+#on:
+#  push:
+#    branches:
+#      - main  # Ветка, на которой должен запускаться Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-and-rename:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v2
+
+      - name: Checkout another repository
+        uses: actions/checkout@v2
+        with:
+          repository: kobrikx/homebrew-testize  # Замени на нужный репозиторий
+          path: ${{ github.workspace }}/homebrew-testize  # Локальная папка для клонирования другого репозитория
+
+      - name: Extract version from ize.rb
+        id: extract_version
+        run: |
+          # Извлекаем строку с версией
+          version=$(grep -Po 'version "\K[0-9.]+' ${{ github.workspace }}/homebrew-testize/ize.rb)
+          version_no_dots=$(echo $version | tr -d '.')
+          echo "Version extracted: $version, Version without dots: $version_no_dots"
+          # Передаем версию как output
+          echo "::set-output name=version::$version"
+          echo "::set-output name=version_no_dots::$version_no_dots"
+
+      - name: Update class name in ize.rb
+        run: |
+          # Заменяем строку "class Ize < Formula" на "class IzeversionX < Formula" в файле
+          sed -i "s/class Ize < Formula/class Ize${{ steps.extract_version.outputs.version_no_dots }} < Formula/" ${{ github.workspace }}/homebrew-testize/ize.rb
+
+      - name: Rename file to include version
+        run: |
+          # Переименовываем файл ize.rb в ize-<version>.rb
+          mv ${{ github.workspace }}/homebrew-testize/ize.rb ${{ github.workspace }}/homebrew-testize/ize-${{ steps.extract_version.outputs.version }}.rb
+
+#      - name: Commit and Push changes
+#        run: |
+#          git config --global user.name 'GitHub Actions'
+#          git config --global user.email 'actions@github.com'
+#          git add homebrew-testize/ize-${{ steps.extract_version.outputs.version }}.rb
+#          git commit -m "Updated class name and renamed ize.rb to ize-${{ steps.extract_version.outputs.version }}.rb"
+#          git push
+      - name: Commit and Push changes
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.TEST_HOMEBREW_TOKEN }}
+        with:
+          source_file: '${{ github.workspace }}/homebrew-testize/ize-${{ steps.extract_version.outputs.version }}.rb'
+          destination_repo: 'kobrikx/homebrew-testize'
+          destination_folder: '/'
+          user_email: 'ize@hazelops.com'
+          user_name: 'ize'
+          commit_message: 'Updated class name and renamed ize.rb to ize-${{ steps.extract_version.outputs.version }}.rb'
