@@ -53,7 +53,7 @@ jobs:
       - name: Commit and Push changes
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          API_TOKEN_GITHUB: ${{ secrets.TEST_HOMEBREW_TOKEN }}
         with:
           source_file: '${{ github.workspace }}/homebrew-testize/ize-${{ steps.extract_version.outputs.version }}.rb'
           destination_repo: 'kobrikx/homebrew-testize'
