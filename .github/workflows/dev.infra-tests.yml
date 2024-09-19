@@ -1,0 +1,154 @@
+#name: "[dev] Infra Tests"
+#defaults:
+#  run:
+#    shell: bash
+#env:
+#  ENV: dev
+#  SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDZqPTy/u82UzDtTY8GUdtGBrQQ1HoyMxZcv/Sc2FeSJTrcLh3i/Mo8pf/MrTO3G7LxJ8syDrptRFIVUheVY7a38UQvay94rJdYtSy6Z/0wLQbnDhJdhzzaPwXrUpBkZO7pcx2HNaC68D/40gTLEHVygJ09VEx8WS7d5QdS8YI6SnXF8ocLF6Nv1WV73aE8Cvz4aUgJJos7pvyX+/WoGzEwpj1aKVPOswRixf18Eg0G6H6WWDfK6zgqEUxsiiP7TB+yXp6VtbDRoS881PK7Cj3+X+lxMBAAuG/PslM6B6koiulCNWyauBZAuay3WR74dYWblYOpD54x1fzrELe2Q4v/1zTi669VqpVfPlH1cnpYiOXaP1aijCA9GFO/dWjxyAAkw2BVeEcbcDaIWhCToMYTHeq2f8Zzi9pxhZyJVO9qg4bXN3EeDGYrbFiWLdWxF9ITKmoSUYG5v8XhXzVTbAyBzDosDiBaa1pMsqFydgc4uZkKAF9govNw1KhRitovz9s= dev-nutcorp"
+#  IZE_LOG_LEVEL: debug
+#  IZE_PLAIN_TEXT: true
+#  IZE_VERSION: 1.1.12
+#  AWS_REGION: us-east-1
+#  AWS_PROFILE: default
+#
+#
+#on:
+#  pull_request:
+##    branches:
+##      - develop
+##    paths:
+##      - '.infra/**'
+#
+#jobs:
+#  labeler:
+#    name: Add PR Labels
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Label PRs with Service
+#        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BASE_DIRS: 'apps'
+#        with:
+#          prefix: '🏷️ Service:'
+#
+#      - name: Label PRs with Infra Changes
+#        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BASE_DIRS: '.infra/env'
+#        with:
+#          prefix: '🏷️ Infra:'
+#
+#      - name: Label PRs with Docs
+#        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BASE_DIRS: '.infra/docs'
+#        with:
+#          prefix: '🏷️ Docs:'
+#
+#      - name: Label PRs with Internal Terraform
+#        uses: TinkurLab/monorepo-pr-labeler-action@4.2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BASE_DIRS: '.infra/terraform'
+#        with:
+#          prefix: '🏷️ Terraform:'
+#
+#  # Perform tests on pull requests
+#  terraform_linter:
+#    name: Infra Terraform Linter
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 60
+#    steps:
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+#          aws-region: ${{ env.AWS_REGION }}
+#        env:
+#          AWS_PROFILE: # This is required due to a bug https://stackoverflow.com/a/77731682
+#
+#      - name: Checkout Code
+#        uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#
+#      - name: Ize Setup
+#        uses: hazelops/action-setup-ize@1.0.1
+#        with:
+#          version: ${{ env.IZE_VERSION }}
+#
+#      - name: Create AWS profile
+#        run: ize gen aws-profile
+#
+#      - name: Create Terraform environment
+#        run: ize gen tfenv
+#
+#      - name: Terraform init
+#        run: ize terraform init
+#
+#      - name: Tflint Report Output
+#        uses: reviewdog/action-tflint@v1.23.2
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          working_directory: ".infra/env/${{ env.ENV }}"
+#          tflint_version: "v0.49.0"  # Version set due to this https://github.com/reviewdog/action-tflint/issues/83
+#          reporter: github-pr-review
+#          fail_on_error: "true"
+#          filter_mode: "nofilter"
+#          flags: "--module"
+#
+#  yaml_linter:
+#    name: Apps Yaml Linter
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 60
+#    steps:
+#
+#      - name: Checkout Code
+#        uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#
+#      - name: yamllint
+#        uses: reviewdog/action-yamllint@v1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          reporter: github-pr-review # Change reporter.
+#          fail_on_error: "true"
+#          filter_mode: "nofilter"
+#          yamllint_flags: 'apps/'
+#
+#
+#  infra_spellcheck:
+#    name: Infra Spellcheck
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 60
+#    steps:
+##      - name: Configure AWS Credentials
+##        uses: aws-actions/configure-aws-credentials@v4
+##        with:
+##          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+##          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+##          aws-region: ${{ env.AWS_REGION }}
+##        env:
+##          AWS_PROFILE: # This is required due to a bug https://stackoverflow.com/a/77731682
+#
+#      - name: Checkout Code
+#        uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#
+#      - name: ReviewDog Spellchecker
+#        uses: reviewdog/action-misspell@v1
+#        with:
+#          github_token: ${{ github.token }}
+#          locale: "US"
+#          level: "warning"
+#          pattern: |
+#            *.tf
+#            *.md
+#          reporter: github-pr-review
+#          filter_mode: "nofilter"

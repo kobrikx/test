@@ -26,6 +26,8 @@ module "vpc" {
     "10.30.14.0/23"
   ]
 
+test = "test"
+
   private_subnets = [
     "10.30.20.0/23",
     "10.30.22.0/23",
@@ -38,7 +40,6 @@ module "vpc" {
   //  single_nat_gateway = var.env == "prod" ? false : true
   single_nat_gateway = true
   enable_vpn_gateway = false
-
   enable_dns_hostnames       = true
   enable_dns_support         = true
   manage_default_network_acl = true
@@ -53,6 +54,8 @@ resource "aws_security_group" "default_permissive" {
   name        = "${var.env}-default-permissive"
   vpc_id      = module.vpc.vpc_id
   description = "Managed by Terraform"
+
+
 
   ingress {
     protocol    = -1
